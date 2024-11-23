@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  db:
+    build:
+      context: . 
+    container_name: my-custom-postgres
+    environment:
+      POSTGRES_USER: myusername
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "7777:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Temporary volume for PostgreSQL data
+      - ./m1-data:/tmp                   # Mount local directory for your CSV file
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
+    restart: "no"  # Avoid restarting the container automatically
+
+volumes:
+  pgdata:
+    driver: local
+    driver_opts:
+      type: "tmpfs"  # Use tmpfs for an in-memory filesystem
+      device: "tmpfs"
+      #o: "size=100m"  # Optional: Limit the size of the temporary volume (adjust as needed)
