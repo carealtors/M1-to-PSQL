@@ -56,4 +56,4 @@ Connection Issues
 Ensure that PostgreSQL is listening on all interfaces (listen_addresses = '*') and that the docker-compose.yml file maps the correct ports.
 
 License
-This project is intended for internal use and complies with your organization's data handling policies. Ensure appropriate permissions before sharing or modifying the data.
+This project is intended for internal use 

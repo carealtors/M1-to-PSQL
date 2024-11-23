@@ -156,32 +156,34 @@ CREATE INDEX idx_memberextract_office_id ON MemberExtract (PRIMARY_OFFICE_ID);
 CREATE INDEX idx_memberextract_member_status ON MemberExtract (MEMBER_STATUS_CODE);
 
 
--- -- Create the MemberSecondaryExtract table
--- CREATE TABLE MemberSecondaryExtract (
---     MEMBER_ID BIGINT,
---     ASSOCIATION_ID BIGINT,
---     OFFICE_ID BIGINT,
---     LOCAL_JOIN_DATE DATE,
---     MEMBER_STATUS_CODE TEXT,
---     MEMBER_STATUS_DATE DATE,
---     RE_LICENSE_NUMBER TEXT,
---     LICENSE_STATE TEXT,
---     MEMBER_SUBCLASS TEXT,
---     MEMBER_TYPE_CODE TEXT,
---     ARBITRATION_ETHICS_PENDING TEXT,
---     DUES_WAIVED_FLAG TEXT,
---     SPECIAL_DISCOUNT_FLAG TEXT,
---     LAST_CHANGED_BY TEXT,
---     LAST_CHANGED_DATETIME TIMESTAMP
--- );
+-- Create the MemberSecondaryExtract table
+CREATE TABLE MemberSecondaryExtract (
+    MEMBER_ID BIGINT,
+    ASSOCIATION_ID BIGINT,
+    OFFICE_ID BIGINT,
+    LOCAL_JOIN_DATE DATE,
+    MEMBER_STATUS_CODE TEXT,
+    MEMBER_STATUS_DATE DATE,
+    RE_LICENSE_NUMBER TEXT,
+    LICENSE_STATE TEXT,
+    MEMBER_SUBCLASS TEXT,
+    MEMBER_TYPE_CODE TEXT,
+    ARBITRATION_ETHICS_PENDING TEXT,
+    DUES_WAIVED_FLAG TEXT,
+    SPECIAL_DISCOUNT_FLAG TEXT,
+    LAST_CHANGED_BY TEXT,
+    LAST_CHANGED_DATETIME TIMESTAMP
+);
 
+-- Add indexes to optimize queries
+CREATE INDEX idx_membersecondary_member_id ON MemberSecondaryExtract (MEMBER_ID);
+CREATE INDEX idx_membersecondary_office_id ON MemberSecondaryExtract (OFFICE_ID);
+CREATE INDEX idx_membersecondary_association_status ON MemberSecondaryExtract (ASSOCIATION_ID, MEMBER_STATUS_CODE);
+CREATE INDEX idx_membersecondary_license_number ON MemberSecondaryExtract (RE_LICENSE_NUMBER);
+CREATE INDEX idx_membersecondary_status_date ON MemberSecondaryExtract (MEMBER_STATUS_DATE);
 
--- -- Add indexes to optimize queries
--- CREATE INDEX idx_membersecondary_member_id ON MemberSecondaryExtract (MEMBER_ID);
--- CREATE INDEX idx_membersecondary_office_id ON MemberSecondaryExtract (OFFICE_ID);
--- CREATE INDEX idx_membersecondary_association_status ON MemberSecondaryExtract (ASSOCIATION_ID, MEMBER_STATUS_CODE);
--- CREATE INDEX idx_membersecondary_license_number ON MemberSecondaryExtract (RE_LICENSE_NUMBER);
--- CREATE INDEX idx_membersecondary_status_date ON MemberSecondaryExtract (MEMBER_STATUS_DATE);
+-- Import data from the file
+\copy MemberSecondaryExtract FROM '/tmp/808_MemberSecondaryExtract.m1' DELIMITER '|' CSV HEADER;
 
 
 
@@ -237,7 +239,6 @@ CREATE TABLE OfficeExtract (
     LAST_CHANGED_DATETIME TIMESTAMP
 );
 
-
 -- Add indexes to optimize queries
 CREATE INDEX idx_officeextract_office_id ON OfficeExtract (OFFICE_ID);
 CREATE INDEX idx_officeextract_local_association ON OfficeExtract (PRIMARY_LOCAL_ASSOCIATION_ID);
@@ -245,3 +246,6 @@ CREATE INDEX idx_officeextract_state_association ON OfficeExtract (PRIMARY_STATE
 CREATE INDEX idx_officeextract_status_code ON OfficeExtract (OFFICE_STATUS_CODE);
 CREATE INDEX idx_officeextract_city_state ON OfficeExtract (STREET_CITY, STREET_STATE);
 CREATE INDEX idx_officeextract_billing_office_id ON OfficeExtract (BILLING_OFFICE_ID);
+
+-- Import data from the file
+\copy OfficeExtract FROM '/tmp/808_OfficeExtract.m1' DELIMITER '|' CSV HEADER;
