@@ -4,7 +4,7 @@ This repository provides tools for importing and querying M1 data files into a P
 
 ## Prerequisites
 
-1. Obtain the M1 data files from the [official documentation](https://nationalasnofrealtors.mcoutput.com/1374755/Content/Introduction/Welcome%20to%20M1.htm) The required files include:
+1. Obtain the M1 data files from the [official documentation](https://nationalasnofrealtors.mcoutput.com/1374755/Content/Introduction/Welcome%20to%20M1.htm). The required files include:
    - `****_DuesPaymentsExtract.m1`
    - `****_MemberExtract.m1`
    - `****_MemberSecondaryExtract.m1`
