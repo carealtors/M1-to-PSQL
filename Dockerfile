@@ -9,7 +9,6 @@ WORKDIR /app
 # Copy the Python script for parsing
 COPY utils/parse_spreadsheet.py /app/
 COPY utils/requirements.txt /app/
-COPY ach-files/my_spreadsheet.xlsx /app/
 
 RUN python3 -m venv /app/venv && \
     /app/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
@@ -19,7 +18,6 @@ RUN /app/venv/bin/python parse_spreadsheet.py
 
 # Copy SQL files for initialization
 COPY setup.sql /docker-entrypoint-initdb.d/
-COPY ./m1-data/ /tmp/m1-data 
 COPY ./postgresql.conf /etc/postgresql/postgresql.conf
 
 # Ensure files are readable

@@ -12,9 +12,9 @@ services:
       - "7777:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data  # Temporary volume for PostgreSQL data
-      - ./m1-data:/tmp                   # Mount local directory for your CSV file
+      - ./m1-data:/tmp/m1-data                   # Mount local directory for your CSV file
+      - ./ach-data:/tmp/ach-data                   # Mount local directory for your CSV file
     command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
-    restart: "no"  # Avoid restarting the container automatically
 
 volumes:
   pgdata:

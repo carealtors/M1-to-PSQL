@@ -22,7 +22,7 @@ CREATE TABLE DuesPayments (
 );
 
 -- Import data
-\copy DuesPayments FROM '/tmp/808_DuesPaymentsExtract.m1' DELIMITER '|' CSV HEADER;
+\copy DuesPayments FROM '/tmp/m1-data/808_DuesPaymentsExtract.m1' DELIMITER '|' CSV HEADER;
 
 -- Add indexes
 CREATE INDEX idx_duespayments_member_id ON DuesPayments (MEMBER_ID);
@@ -149,7 +149,7 @@ CREATE TABLE MemberExtract (
 );
 
 -- Import data
-\copy MemberExtract FROM '/tmp/808_MemberExtract.m1' DELIMITER '|' CSV HEADER;
+\copy MemberExtract FROM '/tmp/m1-data/808_MemberExtract.m1' DELIMITER '|' CSV HEADER;
 
 -- Add indexes
 CREATE INDEX idx_memberextract_office_id ON MemberExtract (PRIMARY_OFFICE_ID);
@@ -183,7 +183,7 @@ CREATE INDEX idx_membersecondary_license_number ON MemberSecondaryExtract (RE_LI
 CREATE INDEX idx_membersecondary_status_date ON MemberSecondaryExtract (MEMBER_STATUS_DATE);
 
 -- Import data from the file
-\copy MemberSecondaryExtract FROM '/tmp/808_MemberSecondaryExtract.m1' DELIMITER '|' CSV HEADER;
+\copy MemberSecondaryExtract FROM '/tmp/m1-data/808_MemberSecondaryExtract.m1' DELIMITER '|' CSV HEADER;
 
 
 
@@ -248,4 +248,4 @@ CREATE INDEX idx_officeextract_city_state ON OfficeExtract (STREET_CITY, STREET_
 CREATE INDEX idx_officeextract_billing_office_id ON OfficeExtract (BILLING_OFFICE_ID);
 
 -- Import data from the file
-\copy OfficeExtract FROM '/tmp/808_OfficeExtract.m1' DELIMITER '|' CSV HEADER;
+\copy OfficeExtract FROM '/tmp/m1-data/808_OfficeExtract.m1' DELIMITER '|' CSV HEADER;
