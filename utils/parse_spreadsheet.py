@@ -70,12 +70,10 @@ expected_columns = [
     "Region"
 ]
 
-
 # Path to the input Excel file
-input_file = "/tmp/ach-data/my_spreadsheet.xlsx"
-
+input_file = "/app/ach-data/my_spreadsheet.xlsx"
 # Path to the output CSV file
-output_file = "/tmp/ach-data/my_spreadsheet.csv"
+output_file = "/app/ach-data/my_spreadsheet.csv"
 
 # Call the function
-#find_table_and_export(input_file, output_file, expected_columns)
+find_table_and_export(input_file, output_file, expected_columns)

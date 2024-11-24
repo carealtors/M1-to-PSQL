@@ -10,10 +10,14 @@ WORKDIR /app
 COPY utils/parse_spreadsheet.py /app/
 COPY utils/requirements.txt /app/
 
+COPY m1-data /app/m1-data
+COPY ach-data /app/ach-data
+
 RUN python3 -m venv /app/venv && \
     /app/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
 
 # Run the Python script to parse the spreadsheet before initializing the database
+RUN chmod -R +r /app
 RUN /app/venv/bin/python parse_spreadsheet.py
 
 # Copy SQL files for initialization
@@ -22,6 +26,7 @@ COPY ./postgresql.conf /etc/postgresql/postgresql.conf
 
 # Ensure files are readable
 RUN chmod a+r /docker-entrypoint-initdb.d/*
+
 
 # Expose the desired port
 EXPOSE 7777

@@ -22,7 +22,7 @@ CREATE TABLE DuesPayments (
 );
 
 -- Import data
-\copy DuesPayments FROM '/tmp/m1-data/808_DuesPaymentsExtract.m1' DELIMITER '|' CSV HEADER;
+\copy DuesPayments FROM '/app/m1-data/808_DuesPaymentsExtract.m1' DELIMITER '|' CSV HEADER;
 
 -- Add indexes
 CREATE INDEX idx_duespayments_member_id ON DuesPayments (MEMBER_ID);
@@ -149,7 +149,7 @@ CREATE TABLE MemberExtract (
 );
 
 -- Import data
-\copy MemberExtract FROM '/tmp/m1-data/808_MemberExtract.m1' DELIMITER '|' CSV HEADER;
+\copy MemberExtract FROM '/app/m1-data/808_MemberExtract.m1' DELIMITER '|' CSV HEADER;
 
 -- Add indexes
 CREATE INDEX idx_memberextract_office_id ON MemberExtract (PRIMARY_OFFICE_ID);
@@ -183,7 +183,7 @@ CREATE INDEX idx_membersecondary_license_number ON MemberSecondaryExtract (RE_LI
 CREATE INDEX idx_membersecondary_status_date ON MemberSecondaryExtract (MEMBER_STATUS_DATE);
 
 -- Import data from the file
-\copy MemberSecondaryExtract FROM '/tmp/m1-data/808_MemberSecondaryExtract.m1' DELIMITER '|' CSV HEADER;
+\copy MemberSecondaryExtract FROM '/app/m1-data/808_MemberSecondaryExtract.m1' DELIMITER '|' CSV HEADER;
 
 
 
@@ -248,4 +248,39 @@ CREATE INDEX idx_officeextract_city_state ON OfficeExtract (STREET_CITY, STREET_
 CREATE INDEX idx_officeextract_billing_office_id ON OfficeExtract (BILLING_OFFICE_ID);
 
 -- Import data from the file
-\copy OfficeExtract FROM '/tmp/m1-data/808_OfficeExtract.m1' DELIMITER '|' CSV HEADER;
+\copy OfficeExtract FROM '/app/m1-data/808_OfficeExtract.m1' DELIMITER '|' CSV HEADER;
+
+
+
+-- Temp for ACH spreadsheet
+CREATE TABLE CommitteeData (
+    ActionCodes TEXT,
+    Committee TEXT,
+    CommitteeCode TEXT,
+    CommitteeMemberStatus TEXT,
+    CommitteePositionTitle TEXT,
+    Compnayy TEXT,
+    EffectiveDate DATE,
+    Email TEXT,
+    FirstName TEXT,
+    Id BIGINT PRIMARY KEY,
+    LastName TEXT,
+    MajorKey TEXT,
+    MobilePhone TEXT,
+    Note TEXT,
+    Position TEXT,
+    PrimaryLocalAssociationId BIGINT,
+    ProductCode TEXT,
+    Rank INTEGER,
+    Seqn INTEGER,
+    TermBegin DATE,
+    TermEnd DATE,
+    TermYear INTEGER,
+    ThruDate DATE,
+    Title TEXT,
+    WorkPhone TEXT,
+    AssociationName TEXT,
+    Region TEXT
+);
+
+\copy CommitteeData FROM '/app/ach-data/my_spreadsheet.csv' DELIMITER ',' CSV HEADER;
