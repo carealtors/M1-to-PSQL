@@ -15,7 +15,7 @@ This repository provides tools for importing and querying M1 data files into a P
 ## Setup
 
 ### Step 1: Configure the Association Code
-The state code `808` is currently hardcoded in file paths and SQL scripts. To use data for another state, rename the files and adjust the paths or replace `808` with the desired association code in the scripts.
+The state code `808` is currently hardcoded in file paths and SQL scripts. To use data for another association, rename the files and adjust the paths or replace `808` with the desired association code in the scripts.
 
 ### Step 2: Start the Docker Container
 1. Ensure Docker and Docker Compose are installed on your system.
