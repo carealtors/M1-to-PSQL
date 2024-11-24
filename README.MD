@@ -105,6 +105,64 @@ GROUP BY
     me.PRIMARY_LOCAL_ASSOCIATION_ID;
 ```
 
+5. Total Count of Dues Payments in 2024 Missing EC_CONTROL_NUMBER with PAYMENT_TYPE_CODE = 'STAT'
+``` sql
+SELECT 
+    COUNT(*) AS TOTAL_MISSING_EC_CONTROL
+FROM 
+    DuesPayments
+WHERE 
+    BILLING_YEAR = 2024
+    AND EC_CONTROL_NUMBER IS NULL
+    AND PAYMENT_TYPE_CODE = 'STAT';
+```
+
+6. Full Details of Payments Missing EC_CONTROL_NUMBER with PAYMENT_TYPE_CODE = 'STAT' and PRIMARY_STATE_ASSOCIATION_ID = '808'
+
+``` sql 
+SELECT 
+    MEMBER_ID, 
+    MEMBER_FIRST_NAME, 
+    MEMBER_LAST_NAME, 
+    INCURRING_MEMBER_ID, 
+    INCURRING_MEMBER_FIRST_NAME, 
+    INCURRING_MEMBER_LAST_NAME, 
+    PRIMARY_ASSOCIATION_ID, 
+    PRIMARY_STATE_ASSOCIATION_ID, 
+    BILLING_ASSOCIATION_ID, 
+    OFFICE_ID, 
+    PAYMENT_TYPE_CODE, 
+    BILLING_YEAR, 
+    PAYMENT_AMOUNT, 
+    CONTRIBUTION_TYPE_CODE, 
+    DUES_PAID_DATE, 
+    PAYMENT_SOURCE_CODE, 
+    EC_CONTROL_NUMBER, 
+    LAST_CHANGED_BY, 
+    LAST_CHANGED_DATETIME
+FROM 
+    DuesPayments
+WHERE 
+    BILLING_YEAR = 2024
+    AND EC_CONTROL_NUMBER IS NULL
+    AND PAYMENT_TYPE_CODE = 'STAT'
+    AND PRIMARY_STATE_ASSOCIATION_ID = '808';
+
+```
+7. Count of Dues Payments for 'STAT'  in 2024 without an EC Control Number
+``` sql
+SELECT 
+    COUNT(*) AS TOTAL_MISSING_PRIMARY_STATE_AND_EC_CONTROL
+FROM 
+    DuesPayments
+WHERE 
+    PAYMENT_TYPE_CODE = 'STAT'
+    AND EC_CONTROL_NUMBER IS NULL
+    AND BILLING_YEAR = 2024;
+
+```
+
+
 ## Troubleshooting
 ### Frequent Checkpoints Warning
 If you see warnings about frequent checkpoints in the logs, adjust the max_wal_size and other parameters in the postgresql.conf file.
