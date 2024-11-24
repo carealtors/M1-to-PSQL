@@ -4,18 +4,18 @@ This repository provides tools for importing and querying M1 data files into a P
 
 ## Prerequisites
 
-1. Obtain the M1 data files from the official documentation or your organization's source. The required files include:
-   - `808_DuesPaymentsExtract.m1`
-   - `808_MemberExtract.m1`
-   - `808_MemberSecondaryExtract.m1`
-   - `808_OfficeExtract.m1`
+1. Obtain the M1 data files from the [official documentation](https://nationalasnofrealtors.mcoutput.com/1374755/Content/Introduction/Welcome%20to%20M1.htm) The required files include:
+   - `****_DuesPaymentsExtract.m1`
+   - `****_MemberExtract.m1`
+   - `****_MemberSecondaryExtract.m1`
+   - `****_OfficeExtract.m1`
 
 2. Place the files in the `/m1-data` directory of your project structure or update the import paths in the provided SQL scripts.
 
 ## Setup
 
-### Step 1: Configure the State Code
-The state code `808` is currently hardcoded in file paths and SQL scripts. To use data for another state, rename the files and adjust the paths or replace `808` with the desired state code in the scripts.
+### Step 1: Configure the Association Code
+The state code `808` is currently hardcoded in file paths and SQL scripts. To use data for another state, rename the files and adjust the paths or replace `808` with the desired association code in the scripts.
 
 ### Step 2: Start the Docker Container
 1. Ensure Docker and Docker Compose are installed on your system.
@@ -26,17 +26,17 @@ The state code `808` is currently hardcoded in file paths and SQL scripts. To us
     ```
 
 This will:
-Build and start a PostgreSQL container.
-Import the M1 data files into the database.
-Apply indexes for optimized queries.
+- Build and start a PostgreSQL container.
+- Import the M1 data files into the database.
+- Apply indexes for optimized queries.
 
 ### Step 3: Connect to the Database
 Use psql or your preferred database client to connect to the database:
    ```console
-   psql -h 127.0.0.1 -p 5432 -U myusername -d mydatabase
+   PGPASSWORD=mypassword psql -h 127.0.0.1 -p 7777 -U myusername -d mydatabase
    ```
 
-Replace myusername and mydatabase with the credentials configured in the docker-compose.yml file.
+Replace myusername, mypassword, port, and mydatabase with the credentials configured in the docker-compose.yml file.
 
 ### Step 4: Querying the Data
 Here are some useful queries to get started:
