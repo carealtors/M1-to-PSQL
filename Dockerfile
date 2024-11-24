@@ -1,7 +1,7 @@
 FROM postgres:alpine
 
 # Copy SQL files for initialization
-COPY *.sql /docker-entrypoint-initdb.d/
+COPY setup.sql /docker-entrypoint-initdb.d/
 COPY ./m1-data/ /tmp/m1-data 
 COPY ./postgresql.conf /etc/postgresql/postgresql.conf
 
