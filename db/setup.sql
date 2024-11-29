@@ -21,8 +21,6 @@ CREATE TABLE DuesPayments (
     LAST_CHANGED_DATETIME TIMESTAMP
 );
 
--- Import data
-\copy DuesPayments FROM '/app/m1-data/808_DuesPaymentsExtract.m1' DELIMITER '|' CSV HEADER;
 
 -- Add indexes
 CREATE INDEX idx_duespayments_member_id ON DuesPayments (MEMBER_ID);
@@ -148,8 +146,6 @@ CREATE TABLE MemberExtract (
     LAST_CHANGED_DATETIME TIMESTAMP
 );
 
--- Import data
-\copy MemberExtract FROM '/app/m1-data/808_MemberExtract.m1' DELIMITER '|' CSV HEADER;
 
 -- Add indexes
 CREATE INDEX idx_memberextract_office_id ON MemberExtract (PRIMARY_OFFICE_ID);
@@ -181,9 +177,6 @@ CREATE INDEX idx_membersecondary_office_id ON MemberSecondaryExtract (OFFICE_ID)
 CREATE INDEX idx_membersecondary_association_status ON MemberSecondaryExtract (ASSOCIATION_ID, MEMBER_STATUS_CODE);
 CREATE INDEX idx_membersecondary_license_number ON MemberSecondaryExtract (RE_LICENSE_NUMBER);
 CREATE INDEX idx_membersecondary_status_date ON MemberSecondaryExtract (MEMBER_STATUS_DATE);
-
--- Import data from the file
-\copy MemberSecondaryExtract FROM '/app/m1-data/808_MemberSecondaryExtract.m1' DELIMITER '|' CSV HEADER;
 
 
 
@@ -247,40 +240,48 @@ CREATE INDEX idx_officeextract_status_code ON OfficeExtract (OFFICE_STATUS_CODE)
 CREATE INDEX idx_officeextract_city_state ON OfficeExtract (STREET_CITY, STREET_STATE);
 CREATE INDEX idx_officeextract_billing_office_id ON OfficeExtract (BILLING_OFFICE_ID);
 
--- Import data from the file
-\copy OfficeExtract FROM '/app/m1-data/808_OfficeExtract.m1' DELIMITER '|' CSV HEADER;
 
 
-
--- Temp for ACH spreadsheet
-CREATE TABLE CommitteeData (
-    ActionCodes TEXT,
-    Committee TEXT,
-    CommitteeCode TEXT,
-    CommitteeMemberStatus TEXT,
-    CommitteePositionTitle TEXT,
-    Compnayy TEXT,
-    EffectiveDate DATE,
-    Email TEXT,
-    FirstName TEXT,
-    Id BIGINT PRIMARY KEY,
-    LastName TEXT,
-    MajorKey TEXT,
-    MobilePhone TEXT,
-    Note TEXT,
-    Position TEXT,
-    PrimaryLocalAssociationId BIGINT,
-    ProductCode TEXT,
-    Rank INTEGER,
-    Seqn INTEGER,
-    TermBegin DATE,
-    TermEnd DATE,
-    TermYear INTEGER,
-    ThruDate DATE,
-    Title TEXT,
-    WorkPhone TEXT,
+CREATE TABLE BankMetadata (
+    MetadataID SERIAL PRIMARY KEY, -- Unique ID for referencing
+    AssociationCode TEXT,
     AssociationName TEXT,
-    Region TEXT
+    BankID INT,
+    BankName TEXT,
+    StartDate DATE,
+    EndDate DATE
 );
 
-\copy CommitteeData FROM '/app/ach-data/my_spreadsheet.csv' DELIMITER ',' CSV HEADER;
+CREATE TABLE Invoicing (
+    InvoiceID SERIAL PRIMARY KEY, -- Unique identifier for the invoice record
+    MetadataID INT REFERENCES BankMetadata(MetadataID), -- Foreign key to metadata
+    DestinationAssociation TEXT,
+    ACHSettlementNumber TEXT,
+    ECControlNumber TEXT,
+    MemberName TEXT,
+    MemberID BIGINT,
+    BillingYear INT,
+    GrossAmount NUMERIC,
+    AssociationPortion NUMERIC,
+    TransactionFee NUMERIC,
+    NetAssociationPortion NUMERIC
+);
+
+CREATE TABLE ManualEFT (
+    EFTID SERIAL PRIMARY KEY, -- Unique identifier for the EFT record
+    MetadataID INT REFERENCES BankMetadata(MetadataID), -- Foreign key to metadata
+    ReceivingAssociation TEXT,
+    ACHSettlementNumber TEXT,
+    ECControlNumber TEXT,
+    DestinationOrganization TEXT,
+    Amount NUMERIC
+);
+
+CREATE TABLE Chargeback (
+    ChargebackID SERIAL PRIMARY KEY, -- Unique identifier for the chargeback record
+    MetadataID INT REFERENCES BankMetadata(MetadataID), -- Foreign key to metadata
+    ECControlNumber TEXT,
+    TransactionNumber TEXT,
+    DestinationOrganization TEXT,
+    Amount NUMERIC
+);
