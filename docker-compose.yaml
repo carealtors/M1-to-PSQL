@@ -23,7 +23,6 @@ services:
       context: ./api
     container_name: flask-api
     environment:
-      FLASK_ENV: ${FLASK_ENV}  # Set Flask to development mode
       FLASK_DEBUG: ${FLASK_DEBUG}       # Enable debug mode
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     ports:
