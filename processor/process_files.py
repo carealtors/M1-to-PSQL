@@ -188,6 +188,158 @@ def extract_bank_metadata(file_path, cur):
         logging.warning(f"Error extracting bank metadata in {file_path}: {e}")
         return None
 
+def process_manual_etf_section(file_path, cur, bank_id):
+    """Process the Manual EFT section of the ACH file and insert data into the ManualEFT table."""
+    try:
+        with open(file_path, "r", encoding="utf-8-sig") as file:
+            found_manual_etf = False
+            row_num = 0
+
+            for line in file:
+                row_num += 1
+                line = line.strip()
+
+                # Look for the start of the Manual ETF section
+                if "Manual Electronic Funds Transfer" in line:
+                    found_manual_etf = True
+                    logging.info(f"Found Manual ETF section in {file_path} at line {row_num}.")
+                    next(file)  # Skip the header line
+                    next(file)  # Skip the hardcoded header row
+                    break
+
+            if not found_manual_etf:
+                logging.warning(f"No Manual ETF section found in {file_path}.")
+                return
+
+            headers = [
+                "Receiving Association",
+                "ACH Settlement Number",
+                "EC Control Number",
+                "Destination Organization",
+                "",
+                "Amount",
+            ]
+
+            reader = csv.reader(file)
+            for row_num, values in enumerate(reader, start=row_num + 1):
+                # Stop processing if a blank line is encountered
+                if not values or all(not value.strip() for value in values):
+                    logging.info(f"Blank line encountered in {file_path} at line {row_num}. Stopping Manual ETF processing.")
+                    break
+
+                # Ensure there are enough columns to match headers
+                if len(values) != len(headers):
+                    logging.warning(f"Malformed row at {file_path}, line {row_num}: {values}")
+                    continue
+
+                # Map values to columns, skipping the blank column
+                row = {
+                    "Receiving Association": values[0],
+                    "ACH Settlement Number": values[1],
+                    "EC Control Number": values[2],
+                    "Destination Organization": values[3],
+                    "Amount": values[5],
+                }
+
+                try:
+                    # Insert into the database
+                    cur.execute(
+                        """
+                        INSERT INTO "ManualEFT" (
+                            "BankID",
+                            "ReceivingAssociation",
+                            "ACHSettlementNumber",
+                            "ECControlNumber",
+                            "DestinationOrganization",
+                            "Amount"
+                        ) VALUES (%s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            bank_id,
+                            row["Receiving Association"],
+                            row["ACH Settlement Number"],
+                            row["EC Control Number"],
+                            row["Destination Organization"],
+                            float(row["Amount"].replace("$", "").replace(",", "")) if row["Amount"] else None,
+                        ),
+                    )
+                except Exception as e:
+                    logging.warning(f"Failed to insert row at {file_path}, line {row_num}: {row} - Error: {e}")
+
+    except Exception as e:
+        logging.warning(f"Error processing Manual EFT section in {file_path}: {e}")
+
+def process_chargeback_section(file_path, cur, bank_id):
+    """Process the Chargeback section of the ACH file and insert data into the Chargeback table."""
+    try:
+        with open(file_path, "r", encoding="utf-8-sig") as file:
+            found_chargeback = False
+            row_num = 0
+
+            for line in file:
+                row_num += 1
+                line = line.strip()
+
+                # Look for the start of the Chargeback section
+                if "Chargeback Transfer" in line:
+                    found_chargeback = True
+                    logging.info(f"Found Chargeback section in {file_path} at line {row_num}.")
+                    next(file)  # Skip the header line
+                    next(file)  # Skip the hardcoded header row
+                    break
+
+            if not found_chargeback:
+                logging.warning(f"No Chargeback section found in {file_path}.")
+                return
+
+            headers = [
+                "EC Control Number",
+                "Transaction Number",
+                "Destination Organization",
+                "Amount",
+            ]
+
+            reader = csv.reader(file)
+            for row_num, values in enumerate(reader, start=row_num + 1):
+                # Stop processing if a blank line is encountered
+                if not values or all(not value.strip() for value in values):
+                    logging.info(f"Blank line encountered in {file_path} at line {row_num}. Stopping Chargeback processing.")
+                    break
+
+                # Ensure there are enough columns to match headers
+                if len(values) != len(headers):
+                    logging.warning(f"Malformed row at {file_path}, line {row_num}: {values}")
+                    continue
+
+                # Map values to columns
+                row = dict(zip(headers, values))
+
+                try:
+                    # Insert into the database
+                    cur.execute(
+                        """
+                        INSERT INTO "Chargeback" (
+                            "BankID",
+                            "ECControlNumber",
+                            "TransactionNumber",
+                            "DestinationOrganization",
+                            "Amount"
+                        ) VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        (
+                            bank_id,
+                            row["EC Control Number"],
+                            row["Transaction Number"],
+                            row["Destination Organization"],
+                            float(row["Amount"].replace("$", "").replace(",", "")) if row["Amount"] else None,
+                        ),
+                    )
+                except Exception as e:
+                    logging.warning(f"Failed to insert row at {file_path}, line {row_num}: {row} - Error: {e}")
+
+    except Exception as e:
+        logging.warning(f"Error processing Chargeback section in {file_path}: {e}")
+
 
 def process_ach_files():
     """Process and import ACH files into the database."""
@@ -207,6 +359,10 @@ def process_ach_files():
                 if bank_id is not None:
                     # Process invoicing section
                     process_invoicing_section(file_path, cur, bank_id)
+                    # Process Manual EFT section
+                    process_manual_etf_section(file_path, cur, bank_id)
+                    # Process Chargeback section
+                    process_chargeback_section(file_path, cur, bank_id)
                 else:
                     logging.warning(f"Skipping file {file_path} due to invalid bank metadata.")
             except Exception as e:
