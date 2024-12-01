@@ -1,8 +1,9 @@
-from flask import Flask, jsonify, request
+import locale
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 from dotenv import load_dotenv
 import os
-import psycopg2
 
 # Load environment variables from .env file
 load_dotenv()
@@ -17,8 +18,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+# Set locale for currency formatting
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
-# Define the BankMetadata model
+# Define models
 class BankMetadata(db.Model):
     __tablename__ = 'BankMetadata'
 
@@ -28,78 +31,68 @@ class BankMetadata(db.Model):
     AssociationName = db.Column(db.String)
 
 
-# Define the Invoicing model
 class Invoicing(db.Model):
     __tablename__ = 'Invoicing'
 
     InvoiceID = db.Column(db.Integer, primary_key=True)
     BankID = db.Column(db.Integer, db.ForeignKey('BankMetadata.BankID'))
-    DestinationAssociation = db.Column(db.String)
-    ACHSettlementNumber = db.Column(db.String)
-    ECControlNumber = db.Column(db.String)
-    MemberName = db.Column(db.String)
-    MemberID = db.Column(db.BigInteger)
-    BillingYear = db.Column(db.Integer)
     GrossAmount = db.Column(db.Numeric)
-    AssociationPortion = db.Column(db.Numeric)
-    TransactionFee = db.Column(db.Numeric)
-    NetAssociationPortion = db.Column(db.Numeric)
 
 
-@app.route("/healthcheck", methods=["GET"])
-def healthcheck():
-    """Health check endpoint to verify database connectivity."""
+class ManualEFT(db.Model):
+    __tablename__ = 'ManualEFT'
+
+    EFTID = db.Column(db.Integer, primary_key=True)
+    BankID = db.Column(db.Integer, db.ForeignKey('BankMetadata.BankID'))
+    Amount = db.Column(db.Numeric)
+
+
+class Chargeback(db.Model):
+    __tablename__ = 'Chargeback'
+
+    ChargebackID = db.Column(db.Integer, primary_key=True)
+    BankID = db.Column(db.Integer, db.ForeignKey('BankMetadata.BankID'))
+    Amount = db.Column(db.Numeric)
+
+
+def format_currency(amount):
+    """Format a numeric value as a dollar currency string."""
+    return locale.currency(amount, grouping=True) if amount is not None else "$0.00"
+
+
+@app.route('/summary', methods=['GET'])
+def get_summary():
+    """Provide a summary of data across all tables."""
     try:
-        connection = psycopg2.connect(DATABASE_URL)
-        connection.close()
-        return jsonify({"status": "success", "message": "Database is reachable"}), 200
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        # Aggregate data from Invoicing
+        total_invoicing_amount = db.session.query(func.sum(Invoicing.GrossAmount)).scalar() or 0
+        invoicing_count = db.session.query(func.count(Invoicing.InvoiceID)).scalar()
 
+        # Aggregate data from Manual EFT
+        total_manual_eft_amount = db.session.query(func.sum(ManualEFT.Amount)).scalar() or 0
+        manual_eft_count = db.session.query(func.count(ManualEFT.EFTID)).scalar()
 
-@app.route('/banks', methods=['GET'])
-def get_banks():
-    """Fetch all records from the BankMetadata table."""
-    try:
-        banks = BankMetadata.query.all()
-        result = []
-        for bank in banks:
-            result.append({
-                "BankID": bank.BankID,
-                "BankName": bank.BankName,
-                "AssociationCode": bank.AssociationCode,
-                "AssociationName": bank.AssociationName
-            })
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        # Aggregate data from Chargeback
+        total_chargeback_amount = db.session.query(func.sum(Chargeback.Amount)).scalar() or 0
+        chargeback_count = db.session.query(func.count(Chargeback.ChargebackID)).scalar()
 
+        # Combine results with formatted amounts
+        summary = {
+            "invoicing": {
+                "total_gross_amount": format_currency(total_invoicing_amount),
+                "record_count": invoicing_count,
+            },
+            "manual_eft": {
+                "total_amount": format_currency(total_manual_eft_amount),
+                "record_count": manual_eft_count,
+            },
+            "chargeback": {
+                "total_amount": format_currency(total_chargeback_amount),
+                "record_count": chargeback_count,
+            },
+        }
 
-@app.route('/invoices/<string:ec_control_number>', methods=['GET'])
-def get_invoices_by_ec_control_number(ec_control_number):
-    """Fetch invoices filtered by EC Control Number."""
-    try:
-        invoices = Invoicing.query.filter_by(ECControlNumber=ec_control_number).all()
-        if not invoices:
-            return jsonify({"status": "error", "message": "No invoices found for the specified EC Control Number"}), 404
-
-        result = []
-        for invoice in invoices:
-            result.append({
-                "InvoiceID": invoice.InvoiceID,
-                "BankID": invoice.BankID,
-                "DestinationAssociation": invoice.DestinationAssociation,
-                "ACHSettlementNumber": invoice.ACHSettlementNumber,
-                "ECControlNumber": invoice.ECControlNumber,
-                "MemberName": invoice.MemberName,
-                "MemberID": invoice.MemberID,
-                "BillingYear": invoice.BillingYear,
-                "GrossAmount": str(invoice.GrossAmount),
-                "AssociationPortion": str(invoice.AssociationPortion),
-                "TransactionFee": str(invoice.TransactionFee),
-                "NetAssociationPortion": str(invoice.NetAssociationPortion),
-            })
-        return jsonify(result), 200
+        return jsonify(summary), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
