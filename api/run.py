@@ -22,11 +22,11 @@ db = SQLAlchemy(app)
 class BankMetadata(db.Model):
     __tablename__ = 'BankMetadata'
 
-    MetadataID = db.Column(db.Integer, primary_key=True)
+    BankID = db.Column(db.Integer, primary_key=True)
+    BankName = db.Column(db.String)
     AssociationCode = db.Column(db.String)
     AssociationName = db.Column(db.String)
-    BankID = db.Column(db.Integer)
-    BankName = db.Column(db.String)
+    
 
 
 @app.route("/healthcheck", methods=["GET"])
@@ -49,11 +49,10 @@ def get_banks():
         result = []
         for bank in banks:
             result.append({
-                "MetadataID": bank.MetadataID,
-                "AssociationCode": bank.AssociationCode,
-                "AssociationName": bank.AssociationName,
                 "BankID": bank.BankID,
-                "BankName": bank.BankName
+                "BankName": bank.BankName,
+                "AssociationCode": bank.AssociationCode,
+                "AssociationName": bank.AssociationName
             })
         return jsonify(result), 200
     except Exception as e:

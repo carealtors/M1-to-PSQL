@@ -161,14 +161,7 @@ WHERE
     AND BILLING_YEAR = 2024;
 
 ```
-8. Retrieve All Invoices for a Specific Bank:
 
-``` sql
-SELECT * 
-FROM Invoicing i
-JOIN BankMetadata bm ON i.MetadataID = bm.MetadataID
-WHERE bm.BankID = 2;
-```
 
 
 ## Troubleshooting
