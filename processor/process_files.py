@@ -1,33 +1,64 @@
 import os
-from dotenv import load_dotenv
 import psycopg2
-import csv
-
-# Load environment variables from .env file
-load_dotenv()
+import glob
+from multiprocessing import Pool
 
 # Get environment variables
 DATABASE_URL = os.getenv("DATABASE_URL")
-M1_FILES_DIR = os.getenv("M1_DATA_DIR")
-ACH_FILES_DIR = os.getenv("ACH_DATA_DIR")
+M1_DATA_DIR = os.getenv("M1_DATA_DIR")
 
-def process_m1_files():
-    conn = psycopg2.connect(DATABASE_URL)
-    cur = conn.cursor()
+def import_file_to_db(args):
+    """
+    Import a single file into the corresponding table.
+    """
+    file_path, table_name = args
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
 
-    for filename in os.listdir(M1_FILES_DIR):
-        if filename.endswith(".m1"):
-            filepath = os.path.join(M1_FILES_DIR, filename)
-            print(f"Processing file: {filename}")
-            with open(filepath, "r") as file:
-                reader = csv.reader(file, delimiter="|")
-                headers = next(reader)
-                # Insert logic remains the same as earlier...
+        # Construct SQL COPY command
+        with open(file_path, 'r') as f:
+            cur.copy_expert(
+                f"COPY {table_name} FROM STDIN WITH (FORMAT csv, DELIMITER '|', HEADER true)", f
+            )
 
-    conn.commit()
-    cur.close()
-    conn.close()
-    print("Processing complete!")
+        conn.commit()
+        cur.close()
+        conn.close()
+        print(f"Successfully imported {file_path} into {table_name}")
+    except Exception as e:
+        print(f"Error importing {file_path}: {e}")
+
+def main():
+    if not M1_DATA_DIR:
+        print("M1_DATA_DIR not set")
+        exit(1)
+
+    # List all M1 files in the directory
+    files = glob.glob(os.path.join(M1_DATA_DIR, "*.m1"))
+
+    tasks = []
+    for file_path in files:
+        file_name = os.path.basename(file_path)
+
+        # Determine table name based on file name
+        if "DuesPayments" in file_name:
+            table_name = "DuesPayments"
+        elif "MemberExtract" in file_name:
+            table_name = "MemberExtract"
+        elif "OfficeExtract" in file_name:
+            table_name = "OfficeExtract"
+        elif "MemberSecondaryExtract" in file_name:  
+            table_name = "MemberSecondaryExtract"
+        else:
+            print(f"Unknown file type: {file_name}")
+            continue
+
+        tasks.append((file_path, table_name))
+
+    # Use multiprocessing for parallel imports
+    with Pool(processes=os.cpu_count()) as pool:
+        pool.map(import_file_to_db, tasks)
 
 if __name__ == "__main__":
-    process_m1_files()
+    main()

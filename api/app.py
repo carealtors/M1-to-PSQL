@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
+import psycopg2
 
 # Load environment variables from .env file
 load_dotenv()
@@ -19,7 +20,9 @@ db = SQLAlchemy(app)
 @app.route("/healthcheck", methods=["GET"])
 def healthcheck():
     try:
-        db.session.execute("SELECT 1")
+        # Test database connection
+        connection = psycopg2.connect(DATABASE_URL)
+        connection.close()
         return jsonify({"status": "success", "message": "Database is reachable"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
