@@ -2,3 +2,4 @@
 /m1-data
 /pgdata
 .DS_Store
+__pycache__
