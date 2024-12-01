@@ -378,5 +378,6 @@ def process_ach_files():
 
 if __name__ == "__main__":
     print("Starting data processing...")
+    process_m1_files()  # Process M1 files
     process_ach_files()  # Process ACH files
     print("Data processing complete!")
