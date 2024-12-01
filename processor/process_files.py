@@ -15,6 +15,7 @@ ACH_DATA_DIR = os.getenv("ACH_DATA_DIR")
 
 
 def process_m1_files():
+
     """Process and import M1 files into the database."""
     try:
         conn = psycopg2.connect(DATABASE_URL)
@@ -51,34 +52,33 @@ def process_m1_files():
     except Exception as e:
         print(f"Error importing M1 files: {e}")
 
-
 def extract_bank_metadata(file_path, cur):
     """Extract and insert bank metadata from the top portion of the ACH file."""
     with open(file_path, "r", encoding='utf-8-sig') as file:
-        lines = [next(file) for _ in range(5)]
-        metadata = {}
-        print(f"Starting to extract metadata from {file_path}")
+        lines = [next(file) for _ in range(3)]  # Read the first 3 lines
 
-        for i, line in enumerate(lines):
-            normalized_line = line.strip().replace(" ", "")
-            print(f"Processing line {i}: {normalized_line}")  # Debug print
+        # Line 2: Association code and name
+        association_line = lines[1].strip()
+        association_parts = association_line.split("-", 1)
+        metadata = {
+            "AssociationCode": association_parts[0].strip(),
+            "AssociationName": association_parts[1].strip() if len(association_parts) > 1 else None,
+        }
 
-            # Extract association code and name
-            if "-" in normalized_line and "REALTORS" in normalized_line:
-                parts = normalized_line.split("-", 1)
-                metadata["AssociationCode"] = parts[0]
-                metadata["AssociationName"] = parts[1] if len(parts) > 1 else None
-                print(f"Extracted Association data: {metadata}")  # Debug print
-
-            # Extract bank ID and name
-            elif normalized_line.startswith("BankID:"):
-                parts = normalized_line.split(":", 1)[1].split("-", 1)
-                metadata["BankID"] = int(parts[0].lstrip(','))
-                metadata["BankName"] = parts[1] if len(parts) > 1 else None
-                print(f"Extracted Bank data: {metadata}")  # Debug print
+        # Line 3: Bank ID and name
+        bank_line = lines[2].strip().replace("Bank ID:,", "Bank ID:")  # Clean up commas
+        try:
+            bank_data = bank_line.split(":", 1)[1].strip()  # Extract data after "Bank ID:"
+            bank_parts = bank_data.split("-", 1)
+            metadata["BankID"] = int(bank_parts[0].strip())  # Numeric Bank ID
+            metadata["BankName"] = bank_parts[1].strip() if len(bank_parts) > 1 else None
+        except (IndexError, ValueError) as e:
+            print(f"Error parsing Bank ID line: {bank_line} - {e}")
+            metadata["BankID"] = None
+            metadata["BankName"] = None
 
         # Check if all necessary metadata fields are present
-        if "AssociationCode" in metadata and "BankID" in metadata:
+        if metadata["AssociationCode"] and metadata.get("BankID") is not None:
             cur.execute(
                 """
                 INSERT INTO "BankMetadata" ("AssociationCode", "AssociationName", "BankID", "BankName")
@@ -93,7 +93,7 @@ def extract_bank_metadata(file_path, cur):
             )
             print(f"Inserted metadata from {file_path}: {metadata}")
         else:
-            print(f"No valid metadata found in {file_path} after reading the top five lines.")
+            print(f"No valid metadata found in {file_path}.")
 
 
 def process_ach_files():
@@ -120,6 +120,6 @@ def process_ach_files():
 
 if __name__ == "__main__":
     print("Starting data processing...")
-    process_m1_files()  # Process M1 files
+    #process_m1_files()  # Process M1 files
     process_ach_files()  # Process ACH files
     print("Data processing complete!")

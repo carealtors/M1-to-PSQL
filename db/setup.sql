@@ -234,18 +234,18 @@ CREATE INDEX "idx_officeextract_status_code" ON "OfficeExtract" ("OFFICE_STATUS_
 CREATE INDEX "idx_officeextract_city_state" ON "OfficeExtract" ("STREET_CITY", "STREET_STATE");
 CREATE INDEX "idx_officeextract_billing_office_id" ON "OfficeExtract" ("BILLING_OFFICE_ID");
 
--- Create additional tables
+-- Create the BankMetadata table with BankID as the primary key
 CREATE TABLE "BankMetadata" (
-    "MetadataID" SERIAL PRIMARY KEY,
+    "BankID" INT PRIMARY KEY,
     "AssociationCode" TEXT,
     "AssociationName" TEXT,
-    "BankID" INT,
     "BankName" TEXT
 );
 
+-- Update the Invoicing table to reference BankID
 CREATE TABLE "Invoicing" (
     "InvoiceID" SERIAL PRIMARY KEY,
-    "MetadataID" INT REFERENCES "BankMetadata" ("MetadataID"),
+    "BankID" INT REFERENCES "BankMetadata" ("BankID"),
     "DestinationAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
     "ECControlNumber" TEXT,
@@ -258,9 +258,10 @@ CREATE TABLE "Invoicing" (
     "NetAssociationPortion" NUMERIC
 );
 
+-- Update the ManualEFT table to reference BankID
 CREATE TABLE "ManualEFT" (
     "EFTID" SERIAL PRIMARY KEY,
-    "MetadataID" INT REFERENCES "BankMetadata" ("MetadataID"),
+    "BankID" INT REFERENCES "BankMetadata" ("BankID"),
     "ReceivingAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
     "ECControlNumber" TEXT,
@@ -268,9 +269,10 @@ CREATE TABLE "ManualEFT" (
     "Amount" NUMERIC
 );
 
+-- Update the Chargeback table to reference BankID
 CREATE TABLE "Chargeback" (
     "ChargebackID" SERIAL PRIMARY KEY,
-    "MetadataID" INT REFERENCES "BankMetadata" ("MetadataID"),
+    "BankID" INT REFERENCES "BankMetadata" ("BankID"),
     "ECControlNumber" TEXT,
     "TransactionNumber" TEXT,
     "DestinationOrganization" TEXT,
