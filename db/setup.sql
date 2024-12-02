@@ -22,13 +22,6 @@ CREATE TABLE "DuesPayments" (
 );
 
 -- Add indexes
-
--- testing tabular results
-CREATE INDEX "idx_duespayments_ec_control_number" ON "DuesPayments" ("EC_CONTROL_NUMBER");
-CREATE INDEX "idx_duespayments_primary_office" ON "DuesPayments" ("PRIMARY_ASSOCIATION_ID", "OFFICE_ID");
-CREATE INDEX "idx_duespayments_ec_control_number_null" ON "DuesPayments" ("EC_CONTROL_NUMBER") WHERE "EC_CONTROL_NUMBER" IS NULL;
-
-
 CREATE INDEX "idx_duespayments_member_id" ON "DuesPayments" ("MEMBER_ID");
 CREATE INDEX "idx_duespayments_office_id" ON "DuesPayments" ("OFFICE_ID");
 CREATE INDEX "idx_duespayments_billing_year_payment_type" ON "DuesPayments" ("BILLING_YEAR", "PAYMENT_TYPE_CODE");
