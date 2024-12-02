@@ -376,8 +376,25 @@ def process_ach_files():
         logging.warning(f"Error processing ACH files: {e}")
 
 
+
 if __name__ == "__main__":
+   
+    #Check process flags 
+    process_m1 = os.getenv("PROCESS_M1", "0").strip() == "1"
+    process_ach = os.getenv("PROCESS_ACH", "0").strip() == "1"
     print("Starting data processing...")
-    process_m1_files()  # Process M1 files
-    process_ach_files()  # Process ACH files
+
+    if process_m1:
+        print("Processing M1 files...")
+        process_m1_files()
+    else:
+        print("Skipping M1 file processing as PROCESS_M1 is not set to 1.")
+
+    if process_ach:
+        print("Processing ACH files...")
+        process_ach_files()
+    else:
+        print("Skipping ACH file processing as PROCESS_ACH is not set to 1.")
+
     print("Data processing complete!")
+    
