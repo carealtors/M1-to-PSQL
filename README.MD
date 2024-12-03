@@ -1,6 +1,6 @@
-# M1 Data Processing with PostgreSQL
+# M1 and ACH Data Processing with PostgreSQL
 
-This repository provides tools for importing and querying M1 data files into a PostgreSQL database using Docker.
+This repository provides tools for importing and querying M1 data files and optionally processing NAR ACH files into a PostgreSQL database using Docker. There is also a flask api to expose the data.
 
 ## Prerequisites
 
@@ -11,6 +11,10 @@ This repository provides tools for importing and querying M1 data files into a P
    - `****_OfficeExtract.m1`
 
 2. Place the files in the `/m1-data` directory of your project structure or update the import paths in the provided SQL scripts.
+
+## NAR ACH Data Files (Optional)
+
+If processing NAR ACH files is desired, place the ACH export files in the /ach-data directory. Ensure the toggle for ACH file processing is enabled in the .env file (see Setup below for details). ACH file processing is disabled by default.
 
 ## Setup
 
