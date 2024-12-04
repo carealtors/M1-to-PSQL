@@ -137,7 +137,6 @@ def process_invoicing_section(file_path, cur, bank_id):
     except Exception as e:
         logging.warning(f"Error processing invoicing section in {file_path}: {e}")
 
-
 def extract_bank_metadata(file_path, cur):
     """Extract and insert bank metadata from the top portion of the ACH file."""
     try:
@@ -164,29 +163,44 @@ def extract_bank_metadata(file_path, cur):
                 metadata["BankID"] = None
                 metadata["BankName"] = None
 
-            # Insert metadata into the database if valid
-            if metadata["AssociationCode"] and metadata.get("BankID") is not None:
+            # Check if the BankID already exists in the database
+            if metadata.get("BankID") is not None:
                 cur.execute(
                     """
-                    INSERT INTO "BankMetadata" ("AssociationCode", "AssociationName", "BankID", "BankName")
-                    VALUES (%s, %s, %s, %s)
-                    RETURNING "BankID"
+                    SELECT "BankID" FROM "BankMetadata" WHERE "BankID" = %s
                     """,
-                    (
-                        metadata["AssociationCode"],
-                        metadata["AssociationName"],
-                        metadata["BankID"],
-                        metadata["BankName"],
-                    ),
+                    (metadata["BankID"],),
                 )
-                bank_id = cur.fetchone()[0]
-                return bank_id
+                existing_bank = cur.fetchone()
+
+                if existing_bank:
+                    # BankID exists, return it
+                    logging.info(f"BankID {metadata['BankID']} already exists. Skipping insertion.")
+                    return existing_bank[0]
+                else:
+                    # Insert metadata into the database if valid
+                    cur.execute(
+                        """
+                        INSERT INTO "BankMetadata" ("AssociationCode", "AssociationName", "BankID", "BankName")
+                        VALUES (%s, %s, %s, %s)
+                        RETURNING "BankID"
+                        """,
+                        (
+                            metadata["AssociationCode"],
+                            metadata["AssociationName"],
+                            metadata["BankID"],
+                            metadata["BankName"],
+                        ),
+                    )
+                    bank_id = cur.fetchone()[0]
+                    return bank_id
             else:
                 logging.warning(f"Invalid metadata in {file_path}.")
                 return None
     except Exception as e:
         logging.warning(f"Error extracting bank metadata in {file_path}: {e}")
         return None
+
 
 def process_manual_etf_section(file_path, cur, bank_id):
     """Process the Manual EFT section of the ACH file and insert data into the ManualEFT table."""
@@ -204,7 +218,6 @@ def process_manual_etf_section(file_path, cur, bank_id):
                     found_manual_etf = True
                     logging.info(f"Found Manual ETF section in {file_path} at line {row_num}.")
                     next(file)  # Skip the header line
-                    next(file)  # Skip the hardcoded header row
                     break
 
             if not found_manual_etf:
@@ -285,7 +298,6 @@ def process_chargeback_section(file_path, cur, bank_id):
                     found_chargeback = True
                     logging.info(f"Found Chargeback section in {file_path} at line {row_num}.")
                     next(file)  # Skip the header line
-                    next(file)  # Skip the hardcoded header row
                     break
 
             if not found_chargeback:
