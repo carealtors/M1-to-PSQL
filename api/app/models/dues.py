@@ -4,9 +4,10 @@ from datetime import datetime
 class DuesPayments(db.Model):
     __tablename__ = 'DuesPayments'
 
-    # Define a composite primary key using MEMBER_ID and BILLING_YEAR
+    # Composite primary key (MEMBER_ID, BILLING_YEAR, and LAST_CHANGED_DATETIME)
     MEMBER_ID = db.Column(db.BigInteger, nullable=False, primary_key=True)
     BILLING_YEAR = db.Column(db.Integer, nullable=False, primary_key=True)
+    LAST_CHANGED_DATETIME = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, primary_key=True)
 
     # Additional columns
     MEMBER_FIRST_NAME = db.Column(db.Text)
@@ -25,12 +26,10 @@ class DuesPayments(db.Model):
     PAYMENT_SOURCE_CODE = db.Column(db.Text)
     EC_CONTROL_NUMBER = db.Column(db.Text)
     LAST_CHANGED_BY = db.Column(db.Text)
-    LAST_CHANGED_DATETIME = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Optional: String representation for debugging
     def __repr__(self):
         return (
-            f"<DuesPayments(MEMBER_ID={self.MEMBER_ID}, MEMBER_FIRST_NAME={self.MEMBER_FIRST_NAME}, "
-            f"MEMBER_LAST_NAME={self.MEMBER_LAST_NAME}, BILLING_YEAR={self.BILLING_YEAR}, "
-            f"PAYMENT_AMOUNT={self.PAYMENT_AMOUNT}, DUES_PAID_DATE={self.DUES_PAID_DATE})>"
+            f"<DuesPayments(MEMBER_ID={self.MEMBER_ID}, BILLING_YEAR={self.BILLING_YEAR}, "
+            f"LAST_CHANGED_DATETIME={self.LAST_CHANGED_DATETIME}, PAYMENT_AMOUNT={self.PAYMENT_AMOUNT})>"
         )

@@ -41,48 +41,69 @@ function DuesLookupPage() {
       </button>
       <h1>Dues Lookup</h1>
       <form onSubmit={handleSubmit} className="dues-lookup-form">
-  <div className="form-group">
-    <label>
-      Member ID:
-      <input
-        type="text"
-        value={memberId}
-        onChange={(e) => setMemberId(e.target.value)}
-        className="input-field"
-      />
-    </label>
-  </div>
-  <div className="form-group">
-    <label>
-      Billing Year:
-      <select
-        value={billingYear}
-        onChange={(e) => setBillingYear(Number(e.target.value))}
-        className="dropdown"
-      >
-        {years.map((year) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
-    </label>
-  </div>
-  <button type="submit" className="submit-button">
-    Lookup Dues
-  </button>
-</form>
+        <div className="form-group">
+          <label>
+            Member ID:
+            <input
+              type="text"
+              value={memberId}
+              onChange={(e) => setMemberId(e.target.value)}
+              className="input-field"
+            />
+          </label>
+        </div>
+        <div className="form-group">
+          <label>
+            Billing Year:
+            <select
+              value={billingYear}
+              onChange={(e) => setBillingYear(Number(e.target.value))}
+              className="dropdown"
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <button type="submit" className="submit-button">
+          Lookup Dues
+        </button>
+      </form>
 
       {error && <p className="error-message">{error}</p>}
 
       {duesData && (
         <div className="dues-details">
           <h2>Dues Details</h2>
-          <p><strong>Member ID:</strong> {duesData.MemberID}</p>
-          <p><strong>Member Name:</strong> {duesData.MemberName}</p>
-          <p><strong>Billing Year:</strong> {duesData.BillingYear}</p>
-          <p><strong>Amount:</strong> ${duesData.Amount}</p>
-          <p><strong>Status:</strong> {duesData.Status}</p>
+          <table className="dues-table">
+            <thead>
+              <tr>
+                <th>Member Name</th>
+                <th>Billing Year</th>
+                <th>Payment Amount</th>
+                <th>Dues Paid Date</th>
+                <th>EC Control Number</th>
+                <th>Payment Type</th>
+                <th>Last Changed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {duesData.map((duesEntry, index) => (
+                <tr key={index}>
+                  <td>{duesEntry.MEMBER_FIRST_NAME} {duesEntry.MEMBER_LAST_NAME}</td>
+                  <td>{duesEntry.BILLING_YEAR}</td>
+                  <td>${duesEntry.PAYMENT_AMOUNT}</td>
+                  <td>{duesEntry.DUES_PAID_DATE}</td>
+                  <td>{duesEntry.EC_CONTROL_NUMBER}</td>
+                  <td>{duesEntry.PAYMENT_TYPE_CODE}</td>
+                  <td>{duesEntry.LAST_CHANGED_DATETIME}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

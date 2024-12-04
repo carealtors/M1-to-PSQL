@@ -22,9 +22,9 @@ CREATE TABLE "DuesPayments" (
 );
 
 -- Add indexes
-CREATE INDEX "idx_duespayments_member_id" ON "DuesPayments" ("MEMBER_ID");
-CREATE INDEX "idx_duespayments_office_id" ON "DuesPayments" ("OFFICE_ID");
-CREATE INDEX "idx_duespayments_billing_year_payment_type" ON "DuesPayments" ("BILLING_YEAR", "PAYMENT_TYPE_CODE");
+-- CREATE INDEX "idx_duespayments_member_id" ON "DuesPayments" ("MEMBER_ID");
+-- CREATE INDEX "idx_duespayments_office_id" ON "DuesPayments" ("OFFICE_ID");
+-- CREATE INDEX "idx_duespayments_billing_year_payment_type" ON "DuesPayments" ("BILLING_YEAR", "PAYMENT_TYPE_CODE");
 
 -- Create the MemberExtract table
 CREATE TABLE "MemberExtract" (

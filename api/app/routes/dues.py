@@ -19,8 +19,6 @@ def get_dues_by_member_and_year(member_id, year):
             DuesPayments.MEMBER_ID == member_id,
             DuesPayments.BILLING_YEAR == year
         ).all()
-
-        logging.debug(f"Query returned {len(dues)} rows")
         
         if not dues:
             return jsonify({"status": "error", "message": f"No dues found for Member ID: {member_id} in {year}"}), 404
@@ -56,48 +54,5 @@ def get_dues_by_member_and_year(member_id, year):
         logging.error(f"Error fetching dues for Member ID: {member_id} in Year: {year}: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# New route to get all dues payments for a given MEMBER_ID (regardless of year)
-@dues_blueprint.route('/<int:member_id>', methods=['GET'])
-def get_all_dues_for_member(member_id):
-    """Fetch all dues payments for a member by MEMBER_ID (across all years)."""
-    logging.debug(f"Searching for all dues for Member ID: {member_id}")
-    
-    try:
-        # Query all rows for the given MEMBER_ID (no year filter)
-        dues = DuesPayments.query.filter(DuesPayments.MEMBER_ID == member_id).all()
 
-        logging.debug(f"Query returned {len(dues)} rows for Member ID: {member_id}")
-        
-        if not dues:
-            return jsonify({"status": "error", "message": f"No dues found for Member ID: {member_id}"}), 404
-        
-        result = [
-            {
-                "MEMBER_ID": dues_entry.MEMBER_ID,
-                "MEMBER_FIRST_NAME": dues_entry.MEMBER_FIRST_NAME,
-                "MEMBER_LAST_NAME": dues_entry.MEMBER_LAST_NAME,
-                "INCURRING_MEMBER_ID": dues_entry.INCURRING_MEMBER_ID,
-                "INCURRING_MEMBER_FIRST_NAME": dues_entry.INCURRING_MEMBER_FIRST_NAME,
-                "INCURRING_MEMBER_LAST_NAME": dues_entry.INCURRING_MEMBER_LAST_NAME,
-                "PRIMARY_ASSOCIATION_ID": dues_entry.PRIMARY_ASSOCIATION_ID,
-                "PRIMARY_STATE_ASSOCIATION_ID": dues_entry.PRIMARY_STATE_ASSOCIATION_ID,
-                "BILLING_ASSOCIATION_ID": dues_entry.BILLING_ASSOCIATION_ID,
-                "OFFICE_ID": dues_entry.OFFICE_ID,
-                "PAYMENT_TYPE_CODE": dues_entry.PAYMENT_TYPE_CODE,
-                "BILLING_YEAR": dues_entry.BILLING_YEAR,
-                "PAYMENT_AMOUNT": float(dues_entry.PAYMENT_AMOUNT or 0),
-                "CONTRIBUTION_TYPE_CODE": dues_entry.CONTRIBUTION_TYPE_CODE,
-                "DUES_PAID_DATE": str(dues_entry.DUES_PAID_DATE),
-                "PAYMENT_SOURCE_CODE": dues_entry.PAYMENT_SOURCE_CODE,
-                "EC_CONTROL_NUMBER": dues_entry.EC_CONTROL_NUMBER,
-                "LAST_CHANGED_BY": dues_entry.LAST_CHANGED_BY,
-                "LAST_CHANGED_DATETIME": str(dues_entry.LAST_CHANGED_DATETIME)
-            }
-            for dues_entry in dues
-        ]
-        
-        return jsonify(result), 200
-
-    except Exception as e:
-        logging.error(f"Error fetching dues for Member ID: {member_id}: {str(e)}")
-        return jsonify({"status": "error", "message": str(e)}), 500
+# Route to search for dues payments by MEMBER_ID, BIL

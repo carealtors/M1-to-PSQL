@@ -59,18 +59,18 @@ li {
 /* Back to Home Button */
 .back-button {
   margin-bottom: 20px;
-  padding: 10px 20px;
+  padding: 5px 10px; /* Reduced padding */
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px; /* Smaller font size */
 }
 
 .back-button:hover {
   background-color: #0056b3;
 }
-
 /* General Container */
 .invoices-container {
   padding: 20px;
@@ -141,4 +141,20 @@ li {
 /* Form Group for spacing */
 .form-group {
   margin-bottom: 15px; /* Adjust spacing as needed */
+}
+/* Styling for the dues lookup container */
+.dues-lookup-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Form styling */
+.dues-lookup-form {
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
