@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { fetchBanks } from './API';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LandingPage from './LandingPage';
+import BanksPage from './BanksPage';
+import InvoicesPage from './InvoicesPage';
 
 function App() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetchBanks().then((data) => setData(data));
-  }, []);
-
   return (
-    <div>
-      <h1>React Frontend</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/banks" element={<BanksPage />} />
+          <Route path="/invoices" element={<InvoicesPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
