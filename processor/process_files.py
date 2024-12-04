@@ -282,6 +282,98 @@ def process_manual_etf_section(file_path, cur, bank_id):
     except Exception as e:
         logging.warning(f"Error processing Manual EFT section in {file_path}: {e}")
 
+def process_external_interface_section(file_path, cur, bank_id):
+    """Process the External Interface section of the ACH file and insert data into the ExternalInterface table."""
+    try:
+        with open(file_path, "r", encoding="utf-8-sig") as file:
+            found_external_interface = False
+            row_num = 0
+
+            for line in file:
+                row_num += 1
+                line = line.strip()
+
+                # Look for the start of the External Interface section
+                if "External Interface" in line:
+                    found_external_interface = True
+                    logging.info(f"Found External Interface section in {file_path} at line {row_num}.")
+                    next(file)  # Skip the header line
+                    break
+
+            if not found_external_interface:
+                logging.warning(f"No External Interface section found in {file_path}.")
+                return
+
+            headers = [
+                "Destination Association",
+                "ACH Settlement Number",
+                "EC Control Number",
+                "Member Name",
+                "Member ID",
+                "Billing Year",
+                "Gross Amount of Invoice",
+                "Association Portion of Amount",
+                "Transaction Fee on Assoc Portion",
+                "Net Association Portion",
+                "Account Name"
+            ]
+
+            reader = csv.reader(file)
+            for row_num, values in enumerate(reader, start=row_num + 1):
+                # Stop processing if a blank line is encountered
+                if not values or all(not value.strip() for value in values):
+                    logging.info(f"Blank line encountered in {file_path} at line {row_num}. Stopping External Interface processing.")
+                    break
+
+                # Ensure there are enough columns to match headers
+                if len(values) != len(headers):
+                    logging.warning(f"Malformed row at {file_path}, line {row_num}: {values}")
+                    continue
+
+                # Map values to columns
+                row = dict(zip(headers, values))
+
+                try:
+                    # Insert into the database
+                    cur.execute(
+                        """
+                        INSERT INTO "ExternalInterface" (
+                            "BankID",
+                            "DestinationAssociation",
+                            "ACHSettlementNumber",
+                            "ECControlNumber",
+                            "MemberName",
+                            "MemberID",
+                            "BillingYear",
+                            "GrossAmountOfInvoice",
+                            "AssociationPortionOfAmount",
+                            "TransactionFeeOnAssocPortion",
+                            "NetAssociationPortion",
+                            "AccountName"
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            bank_id,
+                            row["Destination Association"],
+                            row["ACH Settlement Number"],
+                            row["EC Control Number"],
+                            row["Member Name"],
+                            int(row["Member ID"]) if row["Member ID"] else None,
+                            int(row["Billing Year"]) if row["Billing Year"] else None,
+                            float(row["Gross Amount of Invoice"].replace("$", "").replace(",", "")) if row["Gross Amount of Invoice"] else None,
+                            float(row["Association Portion of Amount"].replace("$", "").replace(",", "")) if row["Association Portion of Amount"] else None,
+                            float(row["Transaction Fee on Assoc Portion"].replace("$", "").replace(",", "")) if row["Transaction Fee on Assoc Portion"] else None,
+                            float(row["Net Association Portion"].replace("$", "").replace(",", "")) if row["Net Association Portion"] else None,
+                            row["Account Name"]
+                        ),
+                    )
+                except Exception as e:
+                    logging.warning(f"Failed to insert row at {file_path}, line {row_num}: {row} - Error: {e}")
+
+    except Exception as e:
+        logging.warning(f"Error processing External Interface section in {file_path}: {e}")
+
+
 def process_chargeback_section(file_path, cur, bank_id):
     """Process the Chargeback section of the ACH file and insert data into the Chargeback table."""
     try:
@@ -373,6 +465,8 @@ def process_ach_files():
                     process_invoicing_section(file_path, cur, bank_id)
                     # Process Manual EFT section
                     process_manual_etf_section(file_path, cur, bank_id)
+                    # Process External Interface section
+                    process_external_interface_section(file_path, cur, bank_id)
                     # Process Chargeback section
                     process_chargeback_section(file_path, cur, bank_id)
                 else:

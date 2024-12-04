@@ -268,7 +268,29 @@ CREATE TABLE "ManualEFT" (
     "DestinationOrganization" TEXT,
     "Amount" NUMERIC
 );
+-- Create the ExternalInterface table
+CREATE TABLE "ExternalInterface" (
+    "BankID" INT, -- New column to store the BankID
+    "DestinationAssociation" TEXT,
+    "ACHSettlementNumber" TEXT,
+    "ECControlNumber" TEXT,
+    "MemberName" TEXT,
+    "MemberID" BIGINT,
+    "BillingYear" INT,
+    "GrossAmountOfInvoice" NUMERIC,
+    "AssociationPortionOfAmount" NUMERIC,
+    "TransactionFeeOnAssocPortion" NUMERIC,
+    "NetAssociationPortion" NUMERIC,
+    "AccountName" TEXT,
+    CONSTRAINT fk_externalinterface_bankid FOREIGN KEY ("BankID")
+    REFERENCES "BankMetadata" ("BankID") -- Foreign key relationship to BankMetadata
+);
 
+-- Add indexes for faster queries
+CREATE INDEX "idx_externalinterface_bankid" ON "ExternalInterface" ("BankID");
+CREATE INDEX "idx_externalinterface_member_id" ON "ExternalInterface" ("MemberID");
+CREATE INDEX "idx_externalinterface_billing_year" ON "ExternalInterface" ("BillingYear");
+CREATE INDEX "idx_externalinterface_ec_control_number" ON "ExternalInterface" ("ECControlNumber");
 -- Update the Chargeback table to reference BankID
 CREATE TABLE "Chargeback" (
     "ChargebackID" SERIAL PRIMARY KEY,
