@@ -14,6 +14,11 @@ function DuesLookupPage() {
   const futureYears = Array.from({ length: 6 }, (_, i) => 2025 + i); // Years from 2025 to 2030
   const years = [...pastYears, 2024, ...futureYears]; // Combine past, present, and future years
 
+  // Helper function to format the Last Changed date without milliseconds
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().slice(0, 19).replace('T', ' '); // Remove milliseconds and reformat to YYYY-MM-DD HH:mm:ss
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -43,7 +48,7 @@ function DuesLookupPage() {
       <form onSubmit={handleSubmit} className="dues-lookup-form">
         <div className="form-group">
           <label>
-            Member ID:
+            Member ID (Ex: 198511187):
             <input
               type="text"
               value={memberId}
@@ -99,7 +104,7 @@ function DuesLookupPage() {
                   <td>{duesEntry.DUES_PAID_DATE}</td>
                   <td>{duesEntry.EC_CONTROL_NUMBER}</td>
                   <td>{duesEntry.PAYMENT_TYPE_CODE}</td>
-                  <td>{duesEntry.LAST_CHANGED_DATETIME}</td>
+                  <td>{formatDate(duesEntry.LAST_CHANGED_DATETIME)}</td> {/* Format the date */}
                 </tr>
               ))}
             </tbody>

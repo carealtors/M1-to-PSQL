@@ -36,7 +36,7 @@ function InvoicesPage() {
       <h1>Invoices</h1>
       <form onSubmit={handleSubmit} className="invoices-form">
         <label>
-          Enter EC Control Number:
+          Enter EC Control Number (Ex: 66028047):
           <input
             type="text"
             value={ecControlNumber}
