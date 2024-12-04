@@ -28,6 +28,7 @@ def create_app():
     from .routes.efts import efts_blueprint
     from .routes.chargebacks import chargebacks_blueprint
     from .routes.banks import banks_blueprint
+    from .routes.dues import dues_blueprint
 
 
     app.register_blueprint(banks_blueprint, url_prefix="/banks")
@@ -35,5 +36,5 @@ def create_app():
     app.register_blueprint(invoices_blueprint, url_prefix="/invoices")
     app.register_blueprint(efts_blueprint, url_prefix="/efts")
     app.register_blueprint(chargebacks_blueprint, url_prefix="/chargebacks")
-
+    app.register_blueprint(dues_blueprint, url_prefix="/dues")
     return app

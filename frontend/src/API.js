@@ -23,7 +23,7 @@ export async function fetchInvoice(ecControlNumber) {
 }
 
 export async function fetchDues(memberId, year) {
-    const response = await fetch(`${API_BASE_URL}/dues/${memberId}?year=${year}`);
+    const response = await fetch(`${API_BASE_URL}/dues/${memberId}/${year}`);
     if (!response.ok) {
       throw new Error(`Error fetching dues for Member ID: ${memberId} in ${year}`);
     }

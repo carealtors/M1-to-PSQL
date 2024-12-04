@@ -12,11 +12,13 @@ def create_app():
     from .routes.invoices import invoices_blueprint
     from .routes.efts import efts_blueprint
     from .routes.chargebacks import chargebacks_blueprint
+    from .routes.dues import dues_blueprint
 
     app.register_blueprint(summary_blueprint)
     app.register_blueprint(banks_blueprint)
     app.register_blueprint(invoices_blueprint)
     app.register_blueprint(efts_blueprint)
     app.register_blueprint(chargebacks_blueprint)
+    app.register_blueprint(dues_blueprint)
 
     return app
