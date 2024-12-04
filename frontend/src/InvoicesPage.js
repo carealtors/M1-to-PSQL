@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { fetchInvoice } from './API'; // Import fetchInvoice
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import './App.css';
 
 function InvoicesPage() {
   const [ecControlNumber, setEcControlNumber] = useState('');
@@ -25,57 +26,33 @@ function InvoicesPage() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="invoices-container">
       <button
         onClick={() => navigate('/')} // Navigate back to Home
-        style={{
-          marginBottom: '20px',
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
+        className="back-button"
       >
         Back to Home
       </button>
       <h1>Invoices</h1>
-      <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
+      <form onSubmit={handleSubmit} className="invoices-form">
         <label>
           Enter EC Control Number:
           <input
             type="text"
             value={ecControlNumber}
             onChange={(e) => setEcControlNumber(e.target.value)}
-            style={{
-              marginLeft: '10px',
-              padding: '5px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-            }}
+            className="input-field"
           />
         </label>
-        <button
-          type="submit"
-          style={{
-            marginLeft: '10px',
-            padding: '5px 10px',
-            backgroundColor: '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
+        <button type="submit" className="submit-button">
           Fetch Invoice
         </button>
       </form>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
       {invoiceData && (
-        <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '4px' }}>
+        <div className="invoice-details">
           <h2>Invoice Details</h2>
           <p><strong>ACH Settlement Number:</strong> {invoiceData.ACHSettlementNumber}</p>
           <p><strong>Association Portion:</strong> ${invoiceData.AssociationPortion}</p>

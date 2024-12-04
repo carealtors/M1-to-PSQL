@@ -21,3 +21,11 @@ export async function fetchInvoice(ecControlNumber) {
   const data = await response.json();
   return data;
 }
+
+export async function fetchDues(memberId, year) {
+    const response = await fetch(`${API_BASE_URL}/dues/${memberId}?year=${year}`);
+    if (!response.ok) {
+      throw new Error(`Error fetching dues for Member ID: ${memberId} in ${year}`);
+    }
+    return await response.json();
+  }
