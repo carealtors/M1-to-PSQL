@@ -166,6 +166,21 @@ WHERE
 
 ```
 
+8. Count of Dues Payments Types in 2024
+```sql
+SELECT 
+    "PAYMENT_TYPE_CODE", 
+    COUNT(*) AS "PaymentTypeCount"
+FROM 
+    "DuesPayments"
+WHERE 
+    "BILLING_YEAR" = 2024
+GROUP BY 
+    "PAYMENT_TYPE_CODE"
+ORDER BY 
+    "PaymentTypeCount" DESC;
+```
+
 
 
 ## Troubleshooting
@@ -177,3 +192,29 @@ Ensure that PostgreSQL is listening on all interfaces (listen_addresses = '*') a
 
 ##  License
 This project is intended for internal use 
+
+
+SELECT 
+    "PAYMENT_TYPE_CODE", 
+    COUNT(*) AS "PaymentTypeCount"
+FROM 
+    "DuesPayments"
+WHERE 
+    "BILLING_YEAR" = 2024
+GROUP BY 
+    "PAYMENT_TYPE_CODE"
+ORDER BY 
+    "PaymentTypeCount" DESC;
+
+
+SELECT
+    "BILLING_ASSOCIATION_ID",
+    COUNT(*) AS dues_payment_count
+FROM
+    "DuesPayments"
+WHERE
+    "EC_CONTROL_NUMBER" IS NULL
+GROUP BY
+    "BILLING_ASSOCIATION_ID"
+ORDER BY
+    dues_payment_count DESC;
