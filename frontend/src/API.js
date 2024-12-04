@@ -12,3 +12,12 @@ export async function fetchBanks() {
   const data = await response.json();
   return data;
 }
+
+export async function fetchInvoice(ecControlNumber) {
+  const response = await fetch(`${API_BASE_URL}/invoices/${ecControlNumber}`);
+  if (!response.ok) {
+    throw new Error(`Error fetching invoice: ${response.statusText}`);
+  }
+  const data = await response.json();
+  return data;
+}
