@@ -247,3 +247,20 @@ GROUP BY
     total_payment_count.total_payments
 ORDER BY
     ec_percentage ASC;
+
+
+reconcilable 
+
+SELECT * 
+FROM "public"."DuesPayments" 
+WHERE "PAYMENT_SOURCE_CODE" = 'EC' 
+  AND "EC_CONTROL_NUMBER" IS NOT NULL
+  AND "BILLING_YEAR" = 2024;
+
+
+
+SELECT * 
+FROM "public"."DuesPayments" 
+WHERE "PAYMENT_SOURCE_CODE" = 'XT' 
+  AND "EC_CONTROL_NUMBER" IS NOT NULL
+  AND "BILLING_YEAR" = 2024;
