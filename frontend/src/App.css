@@ -164,3 +164,59 @@ li {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+
+.dues-summary-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+h1 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.dues-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.dues-summary-table th,
+.dues-summary-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.dues-summary-table th {
+  background-color: #f2f2f2;
+  cursor: pointer;
+}
+
+.dues-summary-table th:hover {
+  background-color: #e2e2e2;
+}
+
+.dues-summary-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.dues-summary-table tr:hover {
+  background-color: #f1f1f1;
+}

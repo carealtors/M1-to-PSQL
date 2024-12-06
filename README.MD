@@ -206,15 +206,44 @@ GROUP BY
 ORDER BY 
     "PaymentTypeCount" DESC;
 
-
 SELECT
-    "BILLING_ASSOCIATION_ID",
-    COUNT(*) AS dues_payment_count
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    COUNT(*) AS null_ec_control_number,
+    COALESCE(total_payment_count.total_payments, 0) AS total_payments,
+    ROUND(
+        CASE 
+            WHEN COALESCE(total_payment_count.total_payments, 0) > 0 THEN 
+                ((COALESCE(total_payment_count.total_payments, 0) - COUNT(*))::NUMERIC 
+                / COALESCE(total_payment_count.total_payments, 0)) * 100
+            ELSE 0
+        END, 2
+    ) AS ec_percentage
 FROM
     "DuesPayments"
+LEFT JOIN
+    "AssociationDetails"
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = "AssociationDetails"."ASSOCIATION_ID"
+LEFT JOIN (
+    SELECT
+        "BILLING_ASSOCIATION_ID",
+        COUNT(*) AS total_payments
+    FROM
+        "DuesPayments"
+    WHERE
+        "BILLING_YEAR" = 2024
+    GROUP BY
+        "BILLING_ASSOCIATION_ID"
+) AS total_payment_count
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = total_payment_count."BILLING_ASSOCIATION_ID"
 WHERE
-    "EC_CONTROL_NUMBER" IS NULL
+    "DuesPayments"."EC_CONTROL_NUMBER" IS NULL
+    AND "DuesPayments"."BILLING_YEAR" = 2024
 GROUP BY
-    "BILLING_ASSOCIATION_ID"
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    total_payment_count.total_payments
 ORDER BY
-    dues_payment_count DESC;
+    ec_percentage ASC;

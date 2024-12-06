@@ -14,7 +14,8 @@ function LandingPage() {
       <nav style={{ marginTop: '30px' }}>
         <Link to="/banks" style={{ marginRight: '20px' }}>Banks</Link>
         <Link to="/invoices" style={{ marginRight: '20px' }}>Invoices</Link>
-        <Link to="/dues">Dues Lookup</Link> {/* Added Link */}
+        <Link to="/dues" style={{ marginRight: '20px' }}>Dues Lookup</Link> {/* Added Link */}
+        <Link to="/dues-summary">Dues Summary/Exception</Link> {/* Added Link */}
       </nav>
     </div>
   );
