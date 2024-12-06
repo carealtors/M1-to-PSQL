@@ -14,14 +14,75 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 M1_DATA_DIR = os.getenv("M1_DATA_DIR")
 ACH_DATA_DIR = os.getenv("ACH_DATA_DIR")
 
-# Set up logging
-LOG_FILE = "failed_rows.log"
+# Set up logging to print to console
 logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.WARNING,
-    format="%(asctime)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.WARNING,  # Set the logging level
+    format="%(asctime)s - %(message)s",  # Log format
+    datefmt="%Y-%m-%d %H:%M:%S",  # Date format
+    handlers=[logging.StreamHandler()]  # Use StreamHandler for console output
 )
+
+def process_association_data():
+    """Process and import associations.csv into the database."""
+    associations_file = os.path.join(M1_DATA_DIR, "808_AssociationDirectoryExtract.csv")
+    if not os.path.exists(associations_file):
+        print("No associations.csv file found in the m1-data folder. Skipping...")
+        return
+
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        conn.autocommit = False  # Explicit transaction management
+        cur = conn.cursor()
+
+        print(f"Processing association data from {associations_file}...")
+        with open(associations_file, "r", encoding="utf-8-sig") as file:
+            reader = csv.DictReader(file)
+
+            # Columns must match the database schema
+            columns = reader.fieldnames
+            placeholders = ", ".join(["%s"] * len(columns))
+            query = f"""
+                INSERT INTO "AssociationDetails" ({', '.join(f'"{col}"' for col in columns)}) 
+                VALUES ({placeholders})
+            """
+
+            for row_num, row in enumerate(reader, start=1):
+                try:
+                    # Handle empty strings and convert them to None
+                    values = [
+                        row[col].strip() if row[col].strip() else None for col in columns
+                    ]
+
+                    # Convert dates and datetimes
+                    for idx, col in enumerate(columns):
+                        if col.endswith("_DATE") or col.endswith("_DATETIME"):
+                            if values[idx]:
+                                try:
+                                    values[idx] = datetime.strptime(
+                                        values[idx], "%Y-%m-%d %H:%M:%S.%f"
+                                    )
+                                except ValueError:
+                                    try:
+                                        values[idx] = datetime.strptime(
+                                            values[idx], "%Y-%m-%d"
+                                        )
+                                    except ValueError:
+                                        values[idx] = None
+
+                    # Execute the query
+                    cur.execute(query, values)
+                except Exception as e:
+                    logging.warning(f"Failed to insert row {row_num}: {row} - Error: {e}")
+                    conn.rollback()  # Roll back on error to maintain consistency
+                else:
+                    conn.commit()  # Commit if successful
+
+        cur.close()
+        conn.close()
+        print("Association data processed successfully!")
+    except Exception as e:
+        logging.error(f"Error processing association data: {e}")
+
 
 def process_m1_files():
     """Process and import M1 files into the database."""
@@ -492,6 +553,7 @@ if __name__ == "__main__":
 
     if process_m1:
         print("Processing M1 files...")
+        process_association_data()
         process_m1_files()
     else:
         print("Skipping M1 file processing as PROCESS_M1 is not set to 1.")

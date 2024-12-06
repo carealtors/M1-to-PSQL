@@ -29,3 +29,11 @@ export async function fetchDues(memberId, year) {
     }
     return await response.json();
   }
+
+  export async function fetchExceptions() {
+    const response = await fetch(`${API_BASE_URL}/dues_summary/`);
+    if (!response.ok) {
+      throw new Error(`Error fetching dues summaries and exceptions: ${response.statusText}`);
+    }
+    return await response.json();
+  } 
