@@ -169,7 +169,7 @@ def process_invoicing_section(file_path, cur, bank_id):
                             "BankID",
                             "DestinationAssociation",
                             "ACHSettlementNumber",
-                            "ECControlNumber",
+                            "EC_CONTROL_NUMBER",
                             "MemberName",
                             "MemberID",
                             "BillingYear",
@@ -323,7 +323,7 @@ def process_manual_etf_section(file_path, cur, bank_id):
                             "BankID",
                             "ReceivingAssociation",
                             "ACHSettlementNumber",
-                            "ECControlNumber",
+                            "EC_CONTROL_NUMBER",
                             "DestinationOrganization",
                             "Amount"
                         ) VALUES (%s, %s, %s, %s, %s, %s)
@@ -402,7 +402,7 @@ def process_external_interface_section(file_path, cur, bank_id):
                             "BankID",
                             "DestinationAssociation",
                             "ACHSettlementNumber",
-                            "ECControlNumber",
+                            "EC_CONTROL_NUMBER",
                             "MemberName",
                             "MemberID",
                             "BillingYear",
@@ -485,7 +485,7 @@ def process_chargeback_section(file_path, cur, bank_id):
                         """
                         INSERT INTO "Chargeback" (
                             "BankID",
-                            "ECControlNumber",
+                            "EC_CONTROL_NUMBER",
                             "TransactionNumber",
                             "DestinationOrganization",
                             "Amount"

@@ -302,7 +302,7 @@ CREATE TABLE "Invoicing" (
     "BankID" INT REFERENCES "BankMetadata" ("BankID"),
     "DestinationAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "MemberName" TEXT,
     "MemberID" BIGINT,
     "BillingYear" INT,
@@ -318,7 +318,7 @@ CREATE TABLE "ManualEFT" (
     "BankID" INT REFERENCES "BankMetadata" ("BankID"),
     "ReceivingAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "DestinationOrganization" TEXT,
     "Amount" NUMERIC
 );
@@ -327,7 +327,7 @@ CREATE TABLE "ExternalInterface" (
     "BankID" INT, -- New column to store the BankID
     "DestinationAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "MemberName" TEXT,
     "MemberID" BIGINT,
     "BillingYear" INT,
@@ -344,12 +344,12 @@ CREATE TABLE "ExternalInterface" (
 CREATE INDEX "idx_externalinterface_bankid" ON "ExternalInterface" ("BankID");
 CREATE INDEX "idx_externalinterface_member_id" ON "ExternalInterface" ("MemberID");
 CREATE INDEX "idx_externalinterface_billing_year" ON "ExternalInterface" ("BillingYear");
-CREATE INDEX "idx_externalinterface_ec_control_number" ON "ExternalInterface" ("ECControlNumber");
+CREATE INDEX "idx_externalinterface_ec_control_number" ON "ExternalInterface" ("EC_CONTROL_NUMBER");
 -- Update the Chargeback table to reference BankID
 CREATE TABLE "Chargeback" (
     "ChargebackID" SERIAL PRIMARY KEY,
     "BankID" INT REFERENCES "BankMetadata" ("BankID"),
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "TransactionNumber" TEXT,
     "DestinationOrganization" TEXT,
     "Amount" NUMERIC
