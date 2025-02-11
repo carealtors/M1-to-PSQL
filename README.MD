@@ -200,6 +200,7 @@ GROUP BY
     total_payment_count.total_payments
 ORDER BY
     ec_percentage ASC;
+```
 
 ## Troubleshooting
 ### Frequent Checkpoints Warning
@@ -232,7 +233,7 @@ We welcome and encourage pull requests! However, before your contribution can be
 
 The CLA is necessary to ensure that all contributions can be legally used and distributed by CAR while maintaining the open-source nature of the project.
 
-For more details about the CLA process or to read the agreement in advance, please contact the project maintainers.
+For more details about the CLA process or to read the agreement in advance, please contact davec@car.org or the current project maintainers.
 
 
 
