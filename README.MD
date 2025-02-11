@@ -181,7 +181,67 @@ ORDER BY
     "PaymentTypeCount" DESC;
 ```
 
+9. Determine which are reconcilable
+```sql
+SELECT * 
+FROM "public"."DuesPayments" 
+WHERE "PAYMENT_SOURCE_CODE" = 'EC' 
+  AND "EC_CONTROL_NUMBER" IS NOT NULL
+  AND "BILLING_YEAR" = 2024;
 
+
+
+SELECT * 
+FROM "public"."DuesPayments" 
+WHERE "PAYMENT_SOURCE_CODE" = 'XT' 
+  AND "EC_CONTROL_NUMBER" IS NOT NULL
+  AND "BILLING_YEAR" = 2024;
+
+```
+
+10. EC Control Number Percentage by Local Association
+```sql
+SELECT
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    COUNT(*) AS null_ec_control_number,
+    COALESCE(total_payment_count.total_payments, 0) AS total_payments,
+    ROUND(
+        CASE 
+            WHEN COALESCE(total_payment_count.total_payments, 0) > 0 THEN 
+                ((COALESCE(total_payment_count.total_payments, 0) - COUNT(*))::NUMERIC 
+                / COALESCE(total_payment_count.total_payments, 0)) * 100
+            ELSE 0
+        END, 2
+    ) AS ec_percentage
+FROM
+    "DuesPayments"
+LEFT JOIN
+    "AssociationDetails"
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = "AssociationDetails"."ASSOCIATION_ID"
+LEFT JOIN (
+    SELECT
+        "BILLING_ASSOCIATION_ID",
+        COUNT(*) AS total_payments
+    FROM
+        "DuesPayments"
+    WHERE
+        "BILLING_YEAR" = 2024
+    GROUP BY
+        "BILLING_ASSOCIATION_ID"
+) AS total_payment_count
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = total_payment_count."BILLING_ASSOCIATION_ID"
+WHERE
+    "DuesPayments"."EC_CONTROL_NUMBER" IS NULL
+    AND "DuesPayments"."BILLING_YEAR" = 2024
+GROUP BY
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    total_payment_count.total_payments
+ORDER BY
+    ec_percentage ASC;
 
 ## Troubleshooting
 ### Frequent Checkpoints Warning
@@ -191,20 +251,34 @@ If you see warnings about frequent checkpoints in the logs, adjust the max_wal_s
 Ensure that PostgreSQL is listening on all interfaces (listen_addresses = '*') and that the docker-compose.yml file maps the correct ports.
 
 ##  License
-This project is intended for internal use 
+
+This project is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) license. This means you are free to:
+
+- Share — copy and redistribute the material in any medium or format
+- Adapt — remix, transform, and build upon the material
+
+Under the following terms:
+- Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made
+- NonCommercial — You may not use the material for commercial purposes
+
+## Contributing
+
+We welcome and encourage pull requests! However, before your contribution can be accepted, you will need to sign a Contributor License Agreement (CLA) that grants CAR (California Association of REALTORS®) perpetual usage rights of the contributions.
+
+### CLA Process
+
+1. Submit your pull request
+2. We will automated sending the CLA
+3. Sign the Apache-style CLA granting CAR perpetual usage rights
+4. Once signed, your PR will be reviewed for inclusion
+
+The CLA is necessary to ensure that all contributions can be legally used and distributed by CAR while maintaining the open-source nature of the project.
+
+For more details about the CLA process or to read the agreement in advance, please contact the project maintainers.
 
 
-SELECT 
-    "PAYMENT_TYPE_CODE", 
-    COUNT(*) AS "PaymentTypeCount"
-FROM 
-    "DuesPayments"
-WHERE 
-    "BILLING_YEAR" = 2024
-GROUP BY 
-    "PAYMENT_TYPE_CODE"
-ORDER BY 
-    "PaymentTypeCount" DESC;
+
+
 
 SELECT
     "DuesPayments"."BILLING_ASSOCIATION_ID",

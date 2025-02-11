@@ -10,7 +10,7 @@ function LandingPage() {
         alt="CAR Logo" 
         className="logo" // Add class to the logo image
       />
-      <h1>Dues Reconciliation Project</h1>
+      <h1>M1 Data Processing Tool</h1>
       <nav style={{ marginTop: '30px' }}>
         <Link to="/banks" style={{ marginRight: '20px' }}>Banks</Link>
         <Link to="/invoices" style={{ marginRight: '20px' }}>Invoices</Link>
