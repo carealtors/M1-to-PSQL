@@ -1,3 +1,57 @@
+CREATE TABLE "AssociationDetails" (
+    "ASSOCIATION_ID" VARCHAR(50) NOT NULL,
+    "ASSOCIATION_NAME" VARCHAR(255),
+    "ASSOCIATION_TYPE_CODE" CHAR(1),
+    "ASSOCIATION_STATUS_CODE" CHAR(1),
+    "ASSOCIATION_STATUS_DATE" DATE,
+    "AE_ID" VARCHAR(50),
+    "AE_FIRST_NAME" VARCHAR(100),
+    "AE_LAST_NAME" VARCHAR(100),
+    "ASSOCIATION_EXECUTIVE_FAX_NUMBER" VARCHAR(50),
+    "ASSOCIATION_FAX_NUMBER" VARCHAR(50),
+    "ASSOCIATION_PHONE_NUMBER" VARCHAR(50),
+    "ASSOCIATION_EMAIL_ADDRESS" VARCHAR(255),
+    "PRIMARY_STATE_ASSOCIATION_ID" VARCHAR(50),
+    "PRIMARY_STATE_ASSOCIATION_NAME" VARCHAR(255),
+    "MAILING_ADDRESS_LINE_1" VARCHAR(255),
+    "MAILING_ADDRESS_LINE_2" VARCHAR(255),
+    "MAILING_CITY" VARCHAR(100),
+    "MAILING_STATE" CHAR(2),
+    "MAILING_ZIP" VARCHAR(10),
+    "MAILING_ZIP6" VARCHAR(10),
+    "STREET_ADDRESS_LINE_1" VARCHAR(255),
+    "STREET_ADDRESS_LINE_2" VARCHAR(255),
+    "STREET_CITY" VARCHAR(100),
+    "STREET_STATE" CHAR(2),
+    "STREET_ZIP" VARCHAR(10),
+    "STREET_ZIP6" VARCHAR(10),
+    "ADDITIONAL_JURISDICTIONAL_STATE_ASSOCIATION_ID_1" VARCHAR(50),
+    "ADDITIONAL_JURISDICTIONAL_STATE_ASSOCIATION_ID_1_NAME" VARCHAR(255),
+    "ADDITIONAL_JURISDICTIONAL_STATE_ASSOCIATION_ID_2" VARCHAR(50),
+    "ADDITIONAL_JURISDICTIONAL_STATE_ASSOCIATION_ID_2_NAME" VARCHAR(255),
+    "ADDITIONAL_JURISDICTIONAL_STATE_ASSOCIATION_ID_3" VARCHAR(50),
+    "ADDITIONAL_JURISDICTIONAL_STATE_ASSOCIATION_ID_3_NAME" VARCHAR(255),
+    "WEB_PAGE_ADDRESS" VARCHAR(255),
+    "LAST_CERTIFICATION_DATE" DATE,
+    "CURRENT_PRESIDENT_MEMBER_ID" VARCHAR(50),
+    "CURRENT_PRESIDENT_ELECT_MEMBER_ID" VARCHAR(50),
+    "CURRENT_SECRETARY_MEMBER_ID" VARCHAR(50),
+    "CURRENT_TREASURER_MEMBER_ID" VARCHAR(50),
+    "PRIOR_PRESIDENT_MEMBER_ID" VARCHAR(50),
+    "PRIOR_PRESIDENT_ELECT_MEMBER_ID" VARCHAR(50),
+    "PRIOR_SECRETARY_MEMBER_ID" VARCHAR(50),
+    "PRIOR_TREASURER_MEMBER_ID" VARCHAR(50),
+    "FUTURE_PRESIDENT_MEMBER_ID" VARCHAR(50),
+    "FUTURE_PRESIDENT_ELECT_MEMBER_ID" VARCHAR(50),
+    "FUTURE_SECRETARY_MEMBER_ID" VARCHAR(50),
+    "FUTURE_TREASURER_MEMBER_ID" VARCHAR(50),
+    "ELECTION_MONTH" CHAR(2),
+    "LAST_CHANGED_BY" VARCHAR(50),
+    "LAST_CHANGED_DATETIME" TIMESTAMP,
+    PRIMARY KEY ("ASSOCIATION_ID")
+);
+
+
 -- Create the DuesPayments table
 CREATE TABLE "DuesPayments" (
     "MEMBER_ID" BIGINT,
@@ -8,7 +62,7 @@ CREATE TABLE "DuesPayments" (
     "INCURRING_MEMBER_LAST_NAME" TEXT,
     "PRIMARY_ASSOCIATION_ID" TEXT,
     "PRIMARY_STATE_ASSOCIATION_ID" TEXT,
-    "BILLING_ASSOCIATION_ID" BIGINT,
+    "BILLING_ASSOCIATION_ID" VARCHAR(50),
     "OFFICE_ID" BIGINT,
     "PAYMENT_TYPE_CODE" TEXT,
     "BILLING_YEAR" INTEGER,
@@ -22,9 +76,9 @@ CREATE TABLE "DuesPayments" (
 );
 
 -- Add indexes
-CREATE INDEX "idx_duespayments_member_id" ON "DuesPayments" ("MEMBER_ID");
-CREATE INDEX "idx_duespayments_office_id" ON "DuesPayments" ("OFFICE_ID");
-CREATE INDEX "idx_duespayments_billing_year_payment_type" ON "DuesPayments" ("BILLING_YEAR", "PAYMENT_TYPE_CODE");
+-- CREATE INDEX "idx_duespayments_member_id" ON "DuesPayments" ("MEMBER_ID");
+-- CREATE INDEX "idx_duespayments_office_id" ON "DuesPayments" ("OFFICE_ID");
+-- CREATE INDEX "idx_duespayments_billing_year_payment_type" ON "DuesPayments" ("BILLING_YEAR", "PAYMENT_TYPE_CODE");
 
 -- Create the MemberExtract table
 CREATE TABLE "MemberExtract" (
@@ -248,7 +302,7 @@ CREATE TABLE "Invoicing" (
     "BankID" INT REFERENCES "BankMetadata" ("BankID"),
     "DestinationAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "MemberName" TEXT,
     "MemberID" BIGINT,
     "BillingYear" INT,
@@ -264,7 +318,7 @@ CREATE TABLE "ManualEFT" (
     "BankID" INT REFERENCES "BankMetadata" ("BankID"),
     "ReceivingAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "DestinationOrganization" TEXT,
     "Amount" NUMERIC
 );
@@ -273,7 +327,7 @@ CREATE TABLE "ExternalInterface" (
     "BankID" INT, -- New column to store the BankID
     "DestinationAssociation" TEXT,
     "ACHSettlementNumber" TEXT,
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "MemberName" TEXT,
     "MemberID" BIGINT,
     "BillingYear" INT,
@@ -290,13 +344,57 @@ CREATE TABLE "ExternalInterface" (
 CREATE INDEX "idx_externalinterface_bankid" ON "ExternalInterface" ("BankID");
 CREATE INDEX "idx_externalinterface_member_id" ON "ExternalInterface" ("MemberID");
 CREATE INDEX "idx_externalinterface_billing_year" ON "ExternalInterface" ("BillingYear");
-CREATE INDEX "idx_externalinterface_ec_control_number" ON "ExternalInterface" ("ECControlNumber");
+CREATE INDEX "idx_externalinterface_ec_control_number" ON "ExternalInterface" ("EC_CONTROL_NUMBER");
 -- Update the Chargeback table to reference BankID
 CREATE TABLE "Chargeback" (
     "ChargebackID" SERIAL PRIMARY KEY,
     "BankID" INT REFERENCES "BankMetadata" ("BankID"),
-    "ECControlNumber" TEXT,
+    "EC_CONTROL_NUMBER" TEXT,
     "TransactionNumber" TEXT,
     "DestinationOrganization" TEXT,
     "Amount" NUMERIC
 );
+
+
+CREATE VIEW dues_payments_summary AS
+SELECT
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    COUNT(*) AS null_ec_control_number,
+    COALESCE(total_payment_count.total_payments, 0) AS total_payments,
+    ROUND(
+        CASE 
+            WHEN COALESCE(total_payment_count.total_payments, 0) > 0 THEN 
+                ((COALESCE(total_payment_count.total_payments, 0) - COUNT(*))::NUMERIC 
+                / COALESCE(total_payment_count.total_payments, 0)) * 100
+            ELSE 0
+        END, 2
+    ) AS ec_percentage
+FROM
+    "DuesPayments"
+LEFT JOIN
+    "AssociationDetails"
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = "AssociationDetails"."ASSOCIATION_ID"
+LEFT JOIN (
+    SELECT
+        "BILLING_ASSOCIATION_ID",
+        COUNT(*) AS total_payments
+    FROM
+        "DuesPayments"
+    WHERE
+        "BILLING_YEAR" = 2024
+    GROUP BY
+        "BILLING_ASSOCIATION_ID"
+) AS total_payment_count
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = total_payment_count."BILLING_ASSOCIATION_ID"
+WHERE
+    "DuesPayments"."EC_CONTROL_NUMBER" IS NULL
+    AND "DuesPayments"."BILLING_YEAR" = 2024
+GROUP BY
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    total_payment_count.total_payments
+ORDER BY
+    ec_percentage ASC;

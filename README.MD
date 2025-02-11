@@ -166,6 +166,21 @@ WHERE
 
 ```
 
+8. Count of Dues Payments Types in 2024
+```sql
+SELECT 
+    "PAYMENT_TYPE_CODE", 
+    COUNT(*) AS "PaymentTypeCount"
+FROM 
+    "DuesPayments"
+WHERE 
+    "BILLING_YEAR" = 2024
+GROUP BY 
+    "PAYMENT_TYPE_CODE"
+ORDER BY 
+    "PaymentTypeCount" DESC;
+```
+
 
 
 ## Troubleshooting
@@ -177,3 +192,75 @@ Ensure that PostgreSQL is listening on all interfaces (listen_addresses = '*') a
 
 ##  License
 This project is intended for internal use 
+
+
+SELECT 
+    "PAYMENT_TYPE_CODE", 
+    COUNT(*) AS "PaymentTypeCount"
+FROM 
+    "DuesPayments"
+WHERE 
+    "BILLING_YEAR" = 2024
+GROUP BY 
+    "PAYMENT_TYPE_CODE"
+ORDER BY 
+    "PaymentTypeCount" DESC;
+
+SELECT
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    COUNT(*) AS null_ec_control_number,
+    COALESCE(total_payment_count.total_payments, 0) AS total_payments,
+    ROUND(
+        CASE 
+            WHEN COALESCE(total_payment_count.total_payments, 0) > 0 THEN 
+                ((COALESCE(total_payment_count.total_payments, 0) - COUNT(*))::NUMERIC 
+                / COALESCE(total_payment_count.total_payments, 0)) * 100
+            ELSE 0
+        END, 2
+    ) AS ec_percentage
+FROM
+    "DuesPayments"
+LEFT JOIN
+    "AssociationDetails"
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = "AssociationDetails"."ASSOCIATION_ID"
+LEFT JOIN (
+    SELECT
+        "BILLING_ASSOCIATION_ID",
+        COUNT(*) AS total_payments
+    FROM
+        "DuesPayments"
+    WHERE
+        "BILLING_YEAR" = 2024
+    GROUP BY
+        "BILLING_ASSOCIATION_ID"
+) AS total_payment_count
+ON
+    "DuesPayments"."BILLING_ASSOCIATION_ID" = total_payment_count."BILLING_ASSOCIATION_ID"
+WHERE
+    "DuesPayments"."EC_CONTROL_NUMBER" IS NULL
+    AND "DuesPayments"."BILLING_YEAR" = 2024
+GROUP BY
+    "DuesPayments"."BILLING_ASSOCIATION_ID",
+    "AssociationDetails"."ASSOCIATION_NAME",
+    total_payment_count.total_payments
+ORDER BY
+    ec_percentage ASC;
+
+
+reconcilable 
+
+SELECT * 
+FROM "public"."DuesPayments" 
+WHERE "PAYMENT_SOURCE_CODE" = 'EC' 
+  AND "EC_CONTROL_NUMBER" IS NOT NULL
+  AND "BILLING_YEAR" = 2024;
+
+
+
+SELECT * 
+FROM "public"."DuesPayments" 
+WHERE "PAYMENT_SOURCE_CODE" = 'XT' 
+  AND "EC_CONTROL_NUMBER" IS NOT NULL
+  AND "BILLING_YEAR" = 2024;

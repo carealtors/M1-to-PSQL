@@ -1,0 +1,876 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "2025": {
+      "type": "object",
+      "properties": {
+        "STAT": {
+          "type": "object",
+          "properties": {
+            "JAN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "FEB": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "APR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAY": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUL": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "AUG": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "SEP": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "OCT": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "NOV": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "DEC": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC"
+          ]
+        },
+        "LATE": {
+          "type": "object",
+          "properties": {
+            "JAN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "FEB": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "APR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAY": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUL": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "AUG": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "SEP": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "OCT": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "NOV": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "DEC": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC"
+          ]
+        },
+        "NEW": {
+          "type": "object",
+          "properties": {
+            "JAN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "FEB": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "APR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAY": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUL": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "AUG": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "SEP": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "OCT": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "NOV": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "DEC": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC"
+          ]
+        },
+        "RAF": {
+          "type": "object",
+          "properties": {
+            "JAN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "FEB": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "APR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAY": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUL": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "AUG": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "SEP": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "OCT": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "NOV": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "DEC": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC"
+          ]
+        },
+        "HAF": {
+          "type": "object",
+          "properties": {
+            "JAN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "FEB": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "APR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAY": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUL": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "AUG": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "SEP": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "OCT": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "NOV": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "DEC": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC"
+          ]
+        },
+        "AFF": {
+          "type": "object",
+          "properties": {
+            "JAN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "FEB": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "APR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAY": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUL": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "AUG": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "SEP": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "OCT": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "NOV": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "DEC": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC"
+          ]
+        },
+        "NON": {
+          "type": "object",
+          "properties": {
+            "JAN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "FEB": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "APR": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "MAY": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUN": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "JUL": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "AUG": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "SEP": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "OCT": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "NOV": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "DEC": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC"
+          ]
+        }
+      },
+      "required": [
+        "STAT",
+        "LATE",
+        "NEW",
+        "RAF",
+        "HAF",
+        "AFF",
+        "NON"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "version",
+    "description",
+    "2025"
+  ]
+}
